@@ -1,4 +1,4 @@
-name: Build & Push (latest)
+name: Build and Push Docker Images
 
 on:
   push: {}  # run on every push; push to registry only on default branch
@@ -10,6 +10,7 @@ permissions:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME_API: nicololuescher/sagdu/api
+  IMAGE_NAME_FRONTEND: nicololuescher/sagdu/frontend
 
 jobs:
   build-and-push:
@@ -34,5 +35,14 @@ jobs:
           context: ./api
           push: ${{ github.ref_name == github.event.repository.default_branch }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_API }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: ${{ github.ref_name == github.event.repository.default_branch }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
