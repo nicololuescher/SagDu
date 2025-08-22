@@ -1,3 +1,6 @@
+# SagDu
+
+```yaml
 users:
   - id: 1
     info: {}
@@ -56,4 +59,4 @@ menus:
         - preparation_time: 5
           preparation_type: "active"
           description: "Cook oatmeal with water or milk."
-
+```
