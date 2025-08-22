@@ -1,14 +1,15 @@
+# SagDu
+
+```yaml
 users:
   - id: 1
     info: {}
     preferences: {}
     inventory:
-      - name: oatmeal
-        quantity: 2
-        unit: grams
-      - name: banana
+      - id: 1
+        quantity: 40
+      - id: 2
         quantity: 5
-        unit: pieces
 
 ingredients:
   - id: 1
@@ -58,4 +59,4 @@ menus:
         - preparation_time: 5
           preparation_type: "active"
           description: "Cook oatmeal with water or milk."
-
+```
