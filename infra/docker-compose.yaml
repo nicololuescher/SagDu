@@ -1,12 +1,24 @@
-version: "3.9"
-
 services:
+
+  frontend:
+    build:
+      context: ../frontend
+    ports:
+      - "3000:3000"
+
+  api:
+    build:
+      context: ../api
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:16
-    container_name: SagDu-db
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: SagDu-db
+      POSTGRES_DB: sagdu
       # default user "postgres" is fine
     ports:
       - "5432:5432"
@@ -16,8 +28,9 @@ services:
     volumes:
       - ./init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ${POSTGRES_DB:-SagDu-db}"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${POSTGRES_DB:-sagdu}"]
       interval: 5s
       timeout: 3s
       retries: 20
     restart: unless-stopped
+  
