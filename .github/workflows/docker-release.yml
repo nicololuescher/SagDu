@@ -1,7 +1,9 @@
 name: Build and Push Docker Images
 
 on:
-  push: {}  # run on every push; push to registry only on default branch
+  push:
+    tags:
+      - '*'  # run only on new tags
 
 permissions:
   contents: read
@@ -33,8 +35,9 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./api
-          push: ${{ github.ref_name == github.event.repository.default_branch }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_API }}:latest
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_API }}:${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -42,7 +45,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
-          push: ${{ github.ref_name == github.event.repository.default_branch }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:latest
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
