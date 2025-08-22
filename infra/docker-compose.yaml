@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: SagDu-db
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: SagDu-db
+      # default user "postgres" is fine
+    ports:
+      - "5432:5432"
+    # purely ephemeral storage
+    tmpfs:
+      - /var/lib/postgresql/data
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${POSTGRES_DB:-devdb}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
