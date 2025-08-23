@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS menu (
   id            BIGSERIAL PRIMARY KEY,
   name          TEXT UNIQUE NOT NULL,
   description   TEXT,
-  cooking_time  INTEGER NOT NULL,
+  type          TEXT[] NOT NULL,   -- e.g., ARRAY['breakfast','lunch'] cooking_time  INTEGER NOT NULL,
   recipe        JSONB NOT NULL DEFAULT '{}'::jsonb -- {{preparation_time, preparation_type, description}, ...}
 );
 

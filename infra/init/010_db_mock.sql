@@ -19,8 +19,7 @@ SET name = EXCLUDED.name,
     soy_free = EXCLUDED.soy_free;
 
 ---------------------------------------------------------------------
--- Ingredients (≥10) — macros are “per 100 g” for solids and “per 100 g (~ml)” for liquids.
--- Standardized to 100 g across the board for consistency (no per-piece macros).
+-- Ingredients (per 100 g for solids and ~per 100 g for liquids)
 ---------------------------------------------------------------------
 INSERT INTO ingredient (id, name, calories, protein, carbs, fat, fiber,
                         vegetarian, vegan, gluten_free, lactose_free, soy_free)
@@ -48,7 +47,7 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 ---------------------------------------------------------------------
--- User inventory (3 items) — grams throughout
+-- User inventory (grams throughout)
 ---------------------------------------------------------------------
 INSERT INTO user_ingredient (user_id, ingredient_id, quantity) VALUES
   (1, 1, 500.000),   -- oatmeal (g)
@@ -57,20 +56,22 @@ INSERT INTO user_ingredient (user_id, ingredient_id, quantity) VALUES
 ON CONFLICT (user_id, ingredient_id) DO UPDATE SET quantity = EXCLUDED.quantity;
 
 ---------------------------------------------------------------------
--- Menus (one per type). cooking_time is a column;
--- recipe JSON is an ARRAY of step objects (no "steps" wrapper).
+-- Menus (one per type). Note: menu.type is TEXT[] and we store cooking_time inside recipe JSON.
 ---------------------------------------------------------------------
 -- Breakfast
 WITH ins AS (
-  INSERT INTO menu (name, description, cooking_time, recipe)
+  INSERT INTO menu (name, description, type, recipe)
   VALUES (
     'Demo Breakfast',
     'Oatmeal with banana and milk',
-    10,
-    jsonb_build_array(
-      jsonb_build_object('preparation_time', 2, 'preparation_type','active','description','Bring milk to a simmer.'),
-      jsonb_build_object('preparation_time', 5, 'preparation_type','active','description','Cook oats, stirring.'),
-      jsonb_build_object('preparation_time', 3, 'preparation_type','active','description','Slice banana and top.')
+    ARRAY['breakfast'],
+    jsonb_build_object(
+      'cooking_time', 10,
+      'steps', jsonb_build_array(
+        jsonb_build_object('preparation_time', 2, 'preparation_type','active','description','Bring milk to a simmer.'),
+        jsonb_build_object('preparation_time', 5, 'preparation_type','active','description','Cook oats, stirring.'),
+        jsonb_build_object('preparation_time', 3, 'preparation_type','active','description','Slice banana and top.')
+      )
     )
   )
   ON CONFLICT (name) DO NOTHING
@@ -89,15 +90,18 @@ ON CONFLICT (menu_id, ingredient_id) DO UPDATE SET quantity = EXCLUDED.quantity;
 
 -- Lunch
 WITH ins AS (
-  INSERT INTO menu (name, description, cooking_time, recipe)
+  INSERT INTO menu (name, description, type, recipe)
   VALUES (
     'Demo Lunch',
     'Grilled chicken with rice and broccoli',
-    25,
-    jsonb_build_array(
-      jsonb_build_object('preparation_time', 15, 'preparation_type','active','description','Cook rice.'),
-      jsonb_build_object('preparation_time', 8,  'preparation_type','active','description','Grill chicken.'),
-      jsonb_build_object('preparation_time', 5,  'preparation_type','active','description','Steam broccoli and drizzle oil.')
+    ARRAY['lunch'],
+    jsonb_build_object(
+      'cooking_time', 25,
+      'steps', jsonb_build_array(
+        jsonb_build_object('preparation_time', 15, 'preparation_type','active','description','Cook rice.'),
+        jsonb_build_object('preparation_time', 8,  'preparation_type','active','description','Grill chicken.'),
+        jsonb_build_object('preparation_time', 5,  'preparation_type','active','description','Steam broccoli and drizzle oil.')
+      )
     )
   )
   ON CONFLICT (name) DO NOTHING
@@ -117,15 +121,18 @@ ON CONFLICT (menu_id, ingredient_id) DO UPDATE SET quantity = EXCLUDED.quantity;
 
 -- Dinner
 WITH ins AS (
-  INSERT INTO menu (name, description, cooking_time, recipe)
+  INSERT INTO menu (name, description, type, recipe)
   VALUES (
     'Demo Dinner',
     'Salmon with pasta and spinach',
-    20,
-    jsonb_build_array(
-      jsonb_build_object('preparation_time', 10, 'preparation_type','active','description','Boil pasta to al dente.'),
-      jsonb_build_object('preparation_time', 8,  'preparation_type','active','description','Pan-sear salmon.'),
-      jsonb_build_object('preparation_time', 2,  'preparation_type','active','description','Wilt spinach with a touch of oil.')
+    ARRAY['dinner'],
+    jsonb_build_object(
+      'cooking_time', 20,
+      'steps', jsonb_build_array(
+        jsonb_build_object('preparation_time', 10, 'preparation_type','active','description','Boil pasta to al dente.'),
+        jsonb_build_object('preparation_time', 8,  'preparation_type','active','description','Pan-sear salmon.'),
+        jsonb_build_object('preparation_time', 2,  'preparation_type','active','description','Wilt spinach with a touch of oil.')
+      )
     )
   )
   ON CONFLICT (name) DO NOTHING
@@ -145,7 +152,7 @@ JOIN (VALUES
 ON CONFLICT (menu_id, ingredient_id) DO UPDATE SET quantity = EXCLUDED.quantity;
 
 ---------------------------------------------------------------------
--- Demo meals (3 per type) for user 1 — new meal schema
+-- Demo meals (3 per type) for user 1 — matches new meal schema
 ---------------------------------------------------------------------
 -- Breakfasts
 WITH bmenu AS (SELECT id FROM menu WHERE name='Demo Breakfast')
