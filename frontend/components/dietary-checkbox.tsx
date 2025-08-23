@@ -1,4 +1,4 @@
-import { Checkbox } from '@radix-ui/react-checkbox';
+import { Checkbox } from './ui/checkbox';
 import { FormField, FormItem, FormControl, FormLabel } from './ui/form';
 
 type CheckboxFieldProps = {
@@ -21,6 +21,7 @@ export function DietaryCheckbox({ name, label, control }: CheckboxFieldProps) {
         <FormItem className="flex items-center gap-3 space-y-0">
           <FormControl>
             <Checkbox
+              id={name}
               checked={!!field.value}
               onCheckedChange={(v) => field.onChange(v === true)} // ensure boolean
             />

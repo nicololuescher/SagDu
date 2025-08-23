@@ -2,7 +2,6 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
 import { Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,6 +18,7 @@ import { useMealsStore, useUpdateMeal } from '@/lib/store/meals'; // adjust path
 import IMeal from '@/types/interfaces/IMeal';
 import { Drawer } from '@/components/ui/drawer';
 import { EditDrawer } from '@/components/edit-drawer';
+import { useRouter } from 'next/navigation';
 
 type MealType = 'breakfast' | 'lunch' | 'dinner';
 const MEALS: MealType[] = ['breakfast', 'lunch', 'dinner'];
@@ -28,8 +28,9 @@ const MAX_COLUMNS = 14;
 export default function CreateMealsPage() {
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
+  const router = useRouter();
 
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = React.useState('');
 
   // Pull all meals from the store
   const mealsById = useMealsStore((s) => s.mealsById);
@@ -64,6 +65,11 @@ export default function CreateMealsPage() {
 
   const updateMeal = useUpdateMeal();
 
+  React.useEffect(() => {
+    console.log('Meals updated:', meals);
+    console.log('Drawer open: ', !!drawerOpen);
+  }, [meals, drawerOpen]);
+
   async function onSave() {
     await fetch('/api/meals/bulk', {
       method: 'POST',
@@ -77,6 +83,8 @@ export default function CreateMealsPage() {
       }),
     });
     // TODO: toast success
+
+    router.push('/meals');
   }
 
   if (!mounted || !meals) {
@@ -200,7 +208,7 @@ export default function CreateMealsPage() {
                               > */}
                               <Settings
                                 className="h-5 w-5"
-                                onClick={() => setDrawerOpen(true)}
+                                onClick={() => setDrawerOpen(meal?.id || '')}
                               />
                             </div>
 
@@ -212,7 +220,7 @@ export default function CreateMealsPage() {
 
                               <div className="flex h-6 items-center text-sm">
                                 <span className="truncate">
-                                  {meal?.description ?? '—'}
+                                  {meal?.name ?? '—'}
                                 </span>
                               </div>
 
@@ -245,8 +253,11 @@ export default function CreateMealsPage() {
           </Table>
         </div>
       </div>
-      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <EditDrawer />
+      <Drawer
+        open={!!drawerOpen}
+        onOpenChange={() => setDrawerOpen(drawerOpen)}
+      >
+        <EditDrawer id={drawerOpen} setDrawerOpen={setDrawerOpen} />
       </Drawer>
     </div>
   );

@@ -22,13 +22,7 @@ import { DietaryCheckbox } from './dietary-checkbox';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import React from 'react';
-
-const pctRange = z
-  .tuple([z.number(), z.number()])
-  .refine(([min, max]) => min < max, { message: 'Min must be less than max' })
-  .refine(([min, max]) => min >= 0 && max <= 100, {
-    message: 'Range must be between 0 and 100',
-  });
+import { useUpdateMeal } from '@/lib/store/meals';
 
 const PreferencesSchema = z.object({
   dietary: z.object({
@@ -51,7 +45,13 @@ const DEFAULTS: PreferencesValues = {
   },
 };
 
-export function EditDrawer() {
+export function EditDrawer({
+  id,
+  setDrawerOpen,
+}: {
+  id: string;
+  setDrawerOpen: (id: string) => void;
+}) {
   const form = useForm<PreferencesValues>({
     resolver: zodResolver(PreferencesSchema),
     defaultValues: DEFAULTS,
@@ -59,6 +59,8 @@ export function EditDrawer() {
   });
 
   const [saving, setSaving] = React.useState(false);
+
+  const updateMeal = useUpdateMeal();
 
   async function onSubmit(data: PreferencesValues) {
     setSaving(true);
@@ -77,6 +79,11 @@ export function EditDrawer() {
       setSaving(false);
     }
   }
+
+  const save = () => {
+    updateMeal(id, { name: 'Updated Menu' }); // Example function to update meal based on preferences
+    setDrawerOpen('');
+  };
 
   return (
     <DrawerContent>
@@ -127,10 +134,10 @@ export function EditDrawer() {
           </form>
         </Form>
         <DrawerFooter>
-          <Button>Submit</Button>
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
+          <Button onClick={() => save()}>Replace</Button>
+          <Button variant="outline" onClick={() => setDrawerOpen('')}>
+            Close
+          </Button>
         </DrawerFooter>
       </div>
     </DrawerContent>
