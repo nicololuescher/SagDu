@@ -51,9 +51,8 @@ Wir verwenden Docker um die beiden Komponenten (Frontend und Backend) als Contai
 
 Mit einem Docker Compose File [./infra/docker-compose.yaml](./infra/docker-compose.yaml) kann das Backend und Frontend inklusive Datenbank lokal gestartet werden für ein einfaches Testing und Development.
 
-Eine Demo Version unserer Applikation wurde deployed in Azure auf einer Linux-VM mit Docker Compose und diese ist verschlüsselt erreichbar unter:
-[https://sagdu.nicolo.info](https://sagdu.nicolo.info)
-
+> [!TIP]
+> Eine Demo Version unserer Applikation wurde deployed in Azure auf einer Linux-VM mit Docker Compose und diese ist verschlüsselt erreichbar unter: [https://sagdu.nicolo.info](https://sagdu.nicolo.info)
 
 ## Implementation
 > [!NOTE]
