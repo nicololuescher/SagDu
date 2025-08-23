@@ -50,6 +50,7 @@ class MealManager:
             "description": random_menu["description"],
             "people": 1,
             "menu_id": random_menu["id"],
+            "ingredients": None,
         }
         return meal
     

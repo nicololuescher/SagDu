@@ -45,6 +45,7 @@ class Meal(TypedDict):
     description: str
     people: int
     menu_id: int
+    ingredients: Optional[List[Meal_Ingredient]]
 
 class Meal_Ingredient(TypedDict):
     meal_id: int

@@ -10,7 +10,7 @@ import { IngredientUnit } from '@/types/enums/ingredientUnit';
 type ApiMeal = Omit<IMeal, 'date'> & { date: string };
 
 async function fetchMeals(): Promise<IMeal[]> {
-  const r = await fetch('/api/meals', { cache: 'no-store' });
+  const r = await fetch('/api/users/1/meals', { cache: 'no-store' });
   if (!r.ok) throw new Error('Failed to load meals');
   const json: ApiMeal[] = await r.json();
   // Re-hydrate Date from JSON string
@@ -100,11 +100,11 @@ export const testMeals: IMeal[] = Array.from({ length: 14 }, (_, day) => {
 }).flat();
 
 export default function MealsBridge() {
-  const setMeals = useMealsStore((s) => s.setMeals);
+  const setMeals = useMealsStore((s: any) => s.setMeals);
 
   const { data } = useQuery({
     queryKey: ['meals'],
-    queryFn: async () => testMeals, // fetchMeals
+    queryFn: fetchMeals,
     staleTime: 60_000, // tweak to your needs
     refetchOnWindowFocus: true, // auto-refresh when user returns
   });

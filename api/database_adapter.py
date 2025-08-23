@@ -520,13 +520,14 @@ class DatabaseAdapter:
             "description": cast(str, row[5]),
             "people": cast(int, row[6]),
             "menu_id": cast(int, row[7]),
+            "ingredients": None,
         }
 
     def list_meals_by_user(
-        self,
-        user_id: int,
-        date_from: Optional[date] = None,
-        date_to: Optional[date] = None,
+    self,
+    user_id: int,
+    date_from: Optional[date] = None,
+    date_to: Optional[date] = None,
     ) -> List[Meal]:
         clauses: List[str] = ["user_id = %s"]
         params: List[Any] = [user_id]
@@ -536,7 +537,9 @@ class DatabaseAdapter:
         if date_to is not None:
             clauses.append("date <= %s")
             params.append(date_to)
-        rows = self._query(
+
+        # 1) Fetch meals
+        meal_rows = self._query(
             f"""
             SELECT id, user_id, date, type, name, description, people, menu_id
             FROM app.meal
@@ -545,7 +548,8 @@ class DatabaseAdapter:
             """,
             tuple(params),
         )
-        return [
+
+        meals: List[Meal] = [
             {
                 "id": cast(int, r[0]),
                 "user_id": cast(int, r[1]),
@@ -554,10 +558,74 @@ class DatabaseAdapter:
                 "name": cast(str, r[4]),
                 "description": cast(str, r[5]),
                 "people": cast(int, r[6]),
-                "menu_id": cast(int, r[7]),
+                "menu_id": cast(int, r[7]) if r[7] is not None else 0,
+                # attach later; keep key consistent with rest of code
+                "ingredients": [],  # type: ignore[typeddict-item]
             }
-            for r in rows
+            for r in meal_rows
         ]
+
+        if not meals:
+            return meals
+
+        meal_ids = [m["id"] for m in meals]
+
+        # 2) Fetch ingredients for those meals (join to get ingredient details)
+        placeholders = ",".join(["%s"] * len(meal_ids))
+        ing_rows = self._query(
+            f"""
+            SELECT
+                mi.meal_id,
+                i.id,
+                i.name,
+                i.calories,
+                i.protein,
+                i.carbs,
+                i.fat,
+                i.fiber,
+                i.vegetarian,
+                i.vegan,
+                i.gluten_free,
+                i.lactose_free,
+                i.soy_free,
+                mi.quantity
+            FROM app.meal_ingredient AS mi
+            JOIN app.ingredient AS i
+            ON i.id = mi.ingredient_id
+            WHERE mi.meal_id IN ({placeholders})
+            ORDER BY mi.meal_id, i.id
+            """,
+            tuple(meal_ids),
+        )
+
+        # 3) Bucket ingredients by meal_id
+        by_meal: Dict[int, List[Dict[str, Ingredient | float]]] = {}
+        for r in ing_rows:
+            meal_id = int(r[0])
+            item: Dict[str, Ingredient | float] = {
+                "ingredient": {
+                    "id": int(r[1]),
+                    "name": cast(str, r[2]),
+                    "calories": float(r[3]),
+                    "protein": float(r[4]),
+                    "carbs": float(r[5]),
+                    "fat": float(r[6]),
+                    "fiber": float(r[7]),
+                    "vegetarian": cast(bool, r[8]),
+                    "vegan": cast(bool, r[9]),
+                    "gluten_free": cast(bool, r[10]),
+                    "lactose_free": cast(bool, r[11]),
+                    "soy_free": cast(bool, r[12]),
+                },
+                "quantity": float(r[13]),
+            }
+            by_meal.setdefault(meal_id, []).append(item)
+
+        # 4) Attach to meals
+        for m in meals:
+            m["ingredients"] = by_meal.get(m["id"], [])  # type: ignore[typeddict-item]
+
+        return meals
 
     def create_meal(self, meal: Meal) -> Optional[int]:
         row = self._query_one(
