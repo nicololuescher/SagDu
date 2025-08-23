@@ -58,6 +58,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 Users
               </Link>
               <Link
+                href="/meals"
+                className="flex items-center justify-center py-3 text-sm"
+              >
+                Meals
+              </Link>
+              <Link
                 href="/settings"
                 className="flex items-center justify-center py-3 text-sm"
               >

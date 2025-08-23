@@ -45,6 +45,16 @@ export function SiteHeader() {
             </SheetClose>
             <SheetClose asChild>
               <Link
+                href="/meals"
+                className="rounded-md px-3 py-3 text-base hover:bg-muted"
+              >
+                <div className="flex items-center gap-3">
+                  <Home className="h-4 w-4" /> <span>Meals</span>
+                </div>
+              </Link>
+            </SheetClose>
+            <SheetClose asChild>
+              <Link
                 href="/users"
                 className="rounded-md px-3 py-3 text-base hover:bg-muted"
               >
