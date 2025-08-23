@@ -31,12 +31,18 @@
     <!-- Eyes -->
     <ellipse cx="220" cy="188" rx="26" ry="20" fill="#FFFFFF"/>
     <ellipse cx="292" cy="188" rx="26" ry="20" fill="#FFFFFF"/>
+    <g transform="rotate(10, 220, 215) matrix(0.7 0 0 0.3 210 215)" >
+    <circle style="stroke: rgb(0,0,0); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,144,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="35" />
+    </g>
+    <g transform="rotate(-10, 280, 215) matrix(0.7 0 0 0.3 300 215)" >
+    <circle style="stroke: rgb(0,0,0); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,144,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="35" />
+    </g>
     <!-- Pupils -->
     <circle cx="228" cy="190" r="8" fill="#1B1B1B"/>
     <circle cx="300" cy="190" r="8" fill="#1B1B1B"/>
     <!-- Disappointed eyebrows -->
-    <path d="M200,170 Q220,180 240,170" stroke="#1B1B1B" stroke-width="4" fill="none" stroke-linecap="round"/>
-    <path d="M272,170 Q292,180 312,170" stroke="#1B1B1B" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M200,160 Q220,160 240,150" stroke="#1B1B1B" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M272,150 Q292,160 312,160" stroke="#1B1B1B" stroke-width="4" fill="none" stroke-linecap="round"/>
     <!-- Beak (neutral / slightly downward) -->
     <g id="beak">
       <path d="
