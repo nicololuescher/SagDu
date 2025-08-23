@@ -38,6 +38,7 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_API }}:${{ github.ref_name }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_API }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -48,5 +49,6 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.ref_name }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
