@@ -77,7 +77,6 @@ export function SiteHeader() {
                 className="rounded-md px-3 py-3 text-base hover:bg-muted"
               >
                 <div className="flex items-center gap-3">
-                  <Settings className="h-4 w-4" /> <span>Settings</span>
                   <Settings className="h-4 w-4" /> <span>Preferences</span>
                 </div>
               </Link>
