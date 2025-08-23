@@ -19,7 +19,6 @@ users:
 ingredients:
   - id: 1
     name: oatmeal
-    unit: grams
     # per unit
     calories: 0.68    
     protein: 0.024 
@@ -33,7 +32,6 @@ ingredients:
     soy_free: true
   - id: 2
     name: banana
-    unit: pieces
     # per unit
     calories: 89 
     protein: 1.1 
@@ -55,18 +53,18 @@ meals:
     people: 1
     ingredients:
       - id: 1
-        quantity: 40
+        quantity: 80
       - id: 2
-        quantity: 1
+        quantity: 118
 
 menus:
   - name: "Healthy Start"
     description: "A nutritious breakfast menu"
     ingredients:
       - id: 1
-        quantity: 40
+        quantity: 80
       - id: 2
-        quantity: 1
+        quantity: 118
     cooking_time: 10
     recipe:
       - preparation_time: 5
