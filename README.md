@@ -3,8 +3,16 @@
 ```yaml
 users:
   - id: 1
-    info: {}
-    preferences: {}
+    info:
+      name: "John Doe"
+      age: 30
+      location: "New York"
+    preferences:
+      vegan: true
+      vegetarian: true
+      gluten_free: false
+      lactose_free: true
+      soy_free: true
     inventory:
       - id: 1
         quantity: 40
@@ -15,21 +23,31 @@ ingredients:
   - id: 1
     name: oatmeal
     unit: grams
-    nutrition:
-      calories: 68
-      protein: 2.4
-      carbs: 12
-      fat: 1.4
-      fiber: 1.7
+    # per unit
+    calories: 0.68    
+    protein: 0.024 
+    carbs: 0.012   
+    fat: 1.4       
+    fiber: 1.7
+    vegetarian: true
+    vegan: true
+    gluten_free: false
+    lactose_free: true
+    soy_free: true
   - id: 2
     name: banana
     unit: pieces
-    nutrition:
-      calories: 89
-      protein: 1.1
-      carbs: 23
-      fat: 0.3
-      fiber: 2.6
+    # per unit
+    calories: 89 
+    protein: 1.1 
+    carbs: 23    
+    fat: 0.3     
+    fiber: 2.6
+    vegetarian: true
+    vegan: true
+    gluten_free: true
+    lactose_free: true
+    soy_free: true
 
 meals:
   - user: 1
