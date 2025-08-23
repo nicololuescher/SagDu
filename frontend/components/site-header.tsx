@@ -12,6 +12,7 @@ import {
   WalletCards,
   Egg,
   Utensils,
+  Warehouse,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -62,6 +63,16 @@ export function SiteHeader() {
               >
                 <div className="flex items-center gap-3">
                   <WalletCards className="h-4 w-4" /> <span>Shopping List</span>
+                </div>
+              </Link>
+            </SheetClose>
+            <SheetClose asChild>
+              <Link
+                href="/inventory"
+                className="rounded-md px-3 py-3 text-base hover:bg-muted"
+              >
+                <div className="flex items-center gap-3">
+                  <Warehouse className="h-4 w-4" /> <span>Inventory</span>
                 </div>
               </Link>
             </SheetClose>
