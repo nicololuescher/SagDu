@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS menu (
   name          TEXT UNIQUE NOT NULL,
   description   TEXT,
   type          TEXT[] NOT NULL,   -- e.g., ARRAY['breakfast','lunch'] cooking_time  INTEGER NOT NULL,
+  cooking_time  INTEGER NOT NULL,  -- in minutes
   recipe        JSONB NOT NULL DEFAULT '{}'::jsonb -- {{preparation_time, preparation_type, description}, ...}
 );
 

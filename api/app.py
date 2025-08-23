@@ -17,7 +17,8 @@ from datatypes import (
     Menu, MenuCreate, MenuUpdate,
     Meal, MealCreate, MealUpdate,
     InventoryUpsert,
-    Meal_Ingredient, Menu_Ingredient, MenuIngredientsPayload, MealIngredientsPayload
+    Meal_Ingredient, Menu_Ingredient, MenuIngredientsPayload, MealIngredientsPayload,
+    ResponseMessage
 )
 
 # ---------- helpers ----------
@@ -118,6 +119,28 @@ def create_app() -> Flask:
         if not ok:
             raise APIError(404, "not_found", "User not found")
         return '', 204
+    
+    @app.get("/users/<int:user_id>/create_meals")
+    def create_meals_for_user_endpoint(user_id: int) -> Tuple[Response, int]:
+        res = meal_manager.create_meals(user_id)
+        if res["status"] != "success":
+            raise APIError(404, "not_found", "User not found")
+        return jsonify(res["data"]), 200
+    
+    @app.put("/users/<int:user_id>/meals")
+    def save_meals_for_user_endpoint(user_id: int) -> Tuple[Response, int]:
+        meals = cast(List[Meal], json_body().get("meals", []))
+        response: ResponseMessage = meal_manager.safe_meals(meals)
+        if response["status"] != "success":
+            raise APIError(400, "bad_request", response.get("error") or "Could not save meals")
+        return jsonify(response["data"]), 200
+    
+    @app.get("/users/<int:user_id>/shopping_list")
+    def get_shopping_list_endpoint(user_id: int) -> Tuple[Response, int]:
+        res = meal_manager.get_shopping_list(user_id)
+        if res["status"] != "success":
+            raise APIError(404, "not_found", "User not found")
+        return jsonify(res["data"]), 200
 
     @app.get("/users/<int:user_id>/inventory")
     def get_user_inventory_endpoint(user_id: int) -> Tuple[Response, int]:
