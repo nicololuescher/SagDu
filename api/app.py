@@ -10,6 +10,7 @@ from flask import Flask, jsonify, request, Response
 from werkzeug.exceptions import HTTPException
 
 from database_adapter import DatabaseAdapter
+from meal_manager import MealManager
 from datetime import timedelta
 from datatypes import (
     User, UserCreate, UserUpdate,
@@ -56,6 +57,8 @@ def create_app() -> Flask:
         database=os.getenv("PGDATABASE", "sagdu"),
         port=int(os.getenv("PGPORT", "5432")),
     )
+
+    meal_manager = MealManager(db)
 
     # Errors
     @app.errorhandler(APIError)
