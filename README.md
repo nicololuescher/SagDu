@@ -23,16 +23,6 @@
 
 SagDu ist eine innovative App, die Nutzern hilft, ihre Mahlzeiten besser zu planen und bewusster zu essen. Durch die Berücksichtigung individueller Ernährungsbedürfnisse und -vorlieben fördert SagDu eine gesunde und nachhaltige Ernährung.
 
-## Informationen für technische Jury
+# Dokumentation
 
-### Aktueller Stand
-
-### Ausgangslage
-
-### Technischer Aufbau
-
-### Implementation
-
-### Abgrenzung
-
-
+[Hier geht's zur Tech Jury Dokumentation](tech-info-jury.md)
