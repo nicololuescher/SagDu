@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>
-    <a href="https://tbd/">TBD</a>
+    <a href="https://sagdu.nicolo.info">SagDu</a>
     <br />
     Plane deine Mahlzeiten wie nie zuvor
   </strong>
