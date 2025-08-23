@@ -124,16 +124,16 @@ export default function CreateMealsPage() {
         <div className="h-full overflow-x-auto">
           <Table className="min-w-full table-fixed">
             <colgroup>
-              <col className="w-[128px]" />
+              <col className="w-[80px]" />
               {columns.map((c) => (
                 <col key={c.key} className="w-[168px]" />
               ))}
             </colgroup>
 
             {/* Sticky header */}
-            <TableHeader className="sticky top-0 z-20 bg-background">
+            <TableHeader className="sticky top-0 z-30 bg-background">
               <TableRow className="h-12">
-                <TableHead className="sticky left-0 z-30 bg-background w-[128px] shadow-[2px_0_0_0_hsl(var(--border))]">
+                <TableHead className="sticky left-0 z-10 bg-background w-[80px] shadow-[2px_0_0_0_hsl(var(--border))]">
                   Meal Type
                 </TableHead>
                 {columns.map((c) => (
@@ -149,7 +149,7 @@ export default function CreateMealsPage() {
                         {c.monthDay}
                       </span>
                       {c.isToday && (
-                        <span className="mt-1 rounded bg-muted px-1.5 py-0.5 text-[10px]">
+                        <span className="mt-1 rounded bg-green-200 px-1.5 py-0.5 text-[10px]">
                           Today
                         </span>
                       )}
@@ -162,7 +162,7 @@ export default function CreateMealsPage() {
             {/* Rows */}
             <TableBody>
               {MEALS.map((mealType) => (
-                <TableRow
+                <TableRow className="hover:shadow-md hover:bg-muted/30 transition-all duration-150"
                   key={mealType}
                   style={{
                     // Split remaining height evenly between 3 rows
