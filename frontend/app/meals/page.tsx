@@ -21,6 +21,8 @@ import { Eye, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { MealIcon } from '@/components/ui/mealicon';
 import { Button } from '@/components/ui/button';
+import IMeal from '@/types/interfaces/IMeal';
+import { MealType } from '@/types/enums/mealType';
 
 //This is just for testing. Will need to implement a correct struct later
 type Day = {
@@ -29,26 +31,83 @@ type Day = {
   type: string;
 };
 
-const mockDays: Day[] = [
+const mockMeals: IMeal[] = [
   {
     date: new Date('2025-08-25T12:00:00'),
-    meal: 'testmeal',
-    type: 'breakfast',
+    name: 'testmeal',
+    type: MealType.Lunch,
+    description: 'This is a test meal',
+    id: '1',
+    ingredients: [],
+    macros: { calories: 0, protein: 0, carbs: 0, fat: 0 },
+    selected: false,
+    servings: 1,
   },
-  { date: new Date('2025-08-25T12:00:00'), meal: 'testLunch', type: 'lunch' },
-  { date: new Date('2025-08-26T12:00:00'), meal: 'testmeal2', type: 'lunch' },
-  { date: new Date('2025-08-27T12:00:00'), meal: 'testmeal3', type: 'supper' },
+  {
+    date: new Date('2025-08-25T12:00:00'),
+    name: 'testmeal',
+    type: MealType.Dinner,
+    description: 'This is a test meal',
+    id: '2',
+    ingredients: [],
+    macros: { calories: 0, protein: 0, carbs: 0, fat: 0 },
+    selected: false,
+    servings: 2,
+  },
+  {
+    date: new Date('2025-08-26T12:00:00'),
+    name: 'testmeal',
+    type: MealType.Breakfast,
+    description: 'This is a test meal',
+    id: '3',
+    ingredients: [],
+    macros: { calories: 0, protein: 0, carbs: 0, fat: 0 },
+    selected: false,
+    servings: 1,
+  },
+  {
+    date: new Date('2025-08-27T12:00:00'),
+    name: 'testmeal',
+    type: MealType.Lunch,
+    description: 'This is a test meal',
+    id: '4',
+    ingredients: [],
+    macros: { calories: 0, protein: 0, carbs: 0, fat: 0 },
+    selected: false,
+    servings: 1,
+  },
+  {
+    date: new Date('2025-08-27T12:00:00'),
+    name: 'testmeal',
+    type: MealType.Dinner,
+    description: 'This is a test meal',
+    id: '5',
+    ingredients: [],
+    macros: { calories: 0, protein: 0, carbs: 0, fat: 0 },
+    selected: false,
+    servings: 1,
+  },
   {
     date: new Date('2025-08-28T12:00:00'),
-    meal: 'testmeal4',
-    type: 'breakfast',
+    name: 'testmeal',
+    type: MealType.Breakfast,
+    description: 'This is a test meal',
+    id: '6',
+    ingredients: [],
+    macros: { calories: 0, protein: 0, carbs: 0, fat: 0 },
+    selected: false,
+    servings: 1,
   },
-  { date: new Date('2025-08-29T12:00:00'), meal: 'testmeal5', type: 'error' },
-  { date: new Date('2025-08-30T12:00:00'), meal: 'testmeal6', type: 'lunch' },
   {
-    date: new Date('2025-08-31T12:00:00'),
-    meal: 'testmeal7',
-    type: 'breakfast',
+    date: new Date('2025-08-28T12:00:00'),
+    name: 'testmeal',
+    type: MealType.Lunch,
+    description: 'This is a test meal',
+    id: '7',
+    ingredients: [],
+    macros: { calories: 0, protein: 0, carbs: 0, fat: 0 },
+    selected: false,
+    servings: 1,
   },
 ];
 
@@ -65,27 +124,27 @@ export default function Meals() {
         </Link>
       </TableCaption>
       <TableBody>
-        {mockDays.map((day: Day) => {
-          const showSeparator = previousDay !== day.date.getDate();
-          previousDay = day.date.getDate();
+        {mockMeals.map((meal: IMeal) => {
+          const showSeparator = previousDay !== meal.date.getDate();
+          previousDay = meal.date.getDate();
 
           if (showSeparator) {
             return (
-              <TableRow key={day.date.toDateString() + day.type}>
+              <TableRow key={meal.date.toDateString() + meal.type}>
                 <TableCell>
                   <div className="py-3 text-center text-sm font-semibold text-gray-500">
-                    {day.date.toDateString()}
+                    {meal.date.toDateString()}
                   </div>
-                  <DayCard {...day}></DayCard>
+                  <DayCard {...meal}></DayCard>
                 </TableCell>
               </TableRow>
             );
           }
 
           return (
-            <TableRow key={day.date.toDateString() + day.type}>
+            <TableRow key={meal.date.toDateString() + meal.type}>
               <TableCell className="font-medium">
-                <DayCard {...day}></DayCard>
+                <DayCard {...meal}></DayCard>
               </TableCell>
             </TableRow>
           );
@@ -95,17 +154,17 @@ export default function Meals() {
   );
 }
 
-export function DayCard(day: Day) {
+export function DayCard(meal: IMeal) {
   return (
     <Card className="grid gap-4">
       <CardHeader>
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
           <div className="flex items-center gap-2">
-            <MealIcon type={day.type}></MealIcon>
-            {day.type}
+            <MealIcon type={meal.type}></MealIcon>
+            {meal.type}
           </div>
         </CardTitle>
-        <CardDescription>{day.date.toDateString()}</CardDescription>
+        <CardDescription>{meal.date.toDateString()}</CardDescription>
         <CardAction>
           <Link href="/mealDetails">
             {/* Need to also pass the current meal */}
@@ -114,7 +173,11 @@ export function DayCard(day: Day) {
         </CardAction>
       </CardHeader>
       <CardContent className="flex-col items-start gap-1.5 text-sm">
-        <p>{day.meal}</p>
+        {meal.name}
+        <div className="flex flex-row gap-2 mt-2">
+          <Button variant="outline">Ate</Button>
+          <Button variant="destructive">Didn&apos;t Eat</Button>
+        </div>
       </CardContent>
     </Card>
   );

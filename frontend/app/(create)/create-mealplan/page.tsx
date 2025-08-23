@@ -19,6 +19,7 @@ import IMeal from '@/types/interfaces/IMeal';
 import { Drawer } from '@/components/ui/drawer';
 import { EditDrawer } from '@/components/edit-drawer';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 type MealType = 'breakfast' | 'lunch' | 'dinner';
 const MEALS: MealType[] = ['breakfast', 'lunch', 'dinner'];
@@ -213,24 +214,26 @@ export default function CreateMealsPage() {
                             </div>
 
                             {/* content */}
-                            <div className="mt-2 grid gap-2">
-                              <div className="h-2 w-full overflow-hidden rounded bg-muted">
-                                <div className="h-2 w-0 bg-foreground/30" />
-                              </div>
+                            <Link href="/mealDetails">
+                              <div className="mt-2 grid gap-2">
+                                <div className="h-2 w-full overflow-hidden rounded bg-muted">
+                                  <div className="h-2 w-0 bg-foreground/30" />
+                                </div>
 
-                              <div className="flex h-6 items-center text-sm">
-                                <span className="truncate">
-                                  {meal?.name ?? '—'}
-                                </span>
-                              </div>
+                                <div className="flex h-6 items-center text-sm">
+                                  <span className="truncate">
+                                    {meal?.name ?? '—'}
+                                  </span>
+                                </div>
 
-                              <div className="flex flex-col text-xs text-muted-foreground">
-                                <span>Protein: {meal?.macros.protein}</span>
-                                <span>Fat: {meal?.macros.fat}</span>
-                                <span>Carbs: {meal?.macros.carbs}</span>
-                                <span>kcal: {meal?.macros.calories}</span>
+                                <div className="flex flex-col text-xs text-muted-foreground">
+                                  <span>Protein: {meal?.macros.protein}</span>
+                                  <span>Fat: {meal?.macros.fat}</span>
+                                  <span>Carbs: {meal?.macros.carbs}</span>
+                                  <span>kcal: {meal?.macros.calories}</span>
+                                </div>
                               </div>
-                            </div>
+                            </Link>
 
                             <div className="mt-2">
                               <PeopleStepper
