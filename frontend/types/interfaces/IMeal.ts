@@ -1,4 +1,3 @@
-import { IngredientUnit } from '../enums/ingredientUnit';
 import { MealType } from '../enums/mealType';
 import IIngredient from './IIngredient';
 
