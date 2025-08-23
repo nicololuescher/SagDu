@@ -26,8 +26,8 @@ import { useMealsStore } from '@/lib/store/meals';
 import { useUserStore } from '@/lib/store/user';
 import React from 'react';
 import { Snacks } from '@/types/enums/ISnacks';
-import { useState } from "react";
-import { createPortal } from "react-dom";
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function Meals() {
   let previousDay = new Date().getDate();
@@ -95,112 +95,124 @@ export function DayCard(meal: IMeal) {
   const [showDuck, setShowDuck] = useState(false);
 
   return (
-    <Card className="grid gap-4 w-full min-w-0 overflow-hidden">
-      <CardHeader className="min-w-0">
-        {/* Header row: icon + title/desc on the left, action on the right */}
-        <div className="flex items-start gap-2 min-w-0">
-          <div className="shrink-0 mt-1">
-            <MealIcon type={meal.type} />
+    <div>
+      <Card className="grid gap-4 w-full min-w-0 overflow-hidden">
+        <CardHeader className="min-w-0">
+          {/* Header row: icon + title/desc on the left, action on the right */}
+          <div className="flex items-start gap-2 min-w-0">
+            <div className="shrink-0 mt-1">
+              <MealIcon type={meal.type} />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl truncate">
+                {/* Single-line ellipsis for the name; allow breaking long tokens */}
+                <span className="block min-w-0 truncate break-words">
+                  {meal.name}
+                </span>
+              </CardTitle>
+              <CardDescription className="min-w-0 overflow-hidden text-ellipsis">
+                {meal.date.toDateString()}
+              </CardDescription>
+            </div>
+
+            <CardAction className="shrink-0 ml-2">
+              <Link href={`/mealDetails/${encodeURIComponent(meal.id)}`}>
+                <Eye />
+              </Link>
+            </CardAction>
           </div>
+        </CardHeader>
 
-          <div className="flex-1 min-w-0">
-            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl truncate">
-              {/* Single-line ellipsis for the name; allow breaking long tokens */}
-              <span className="block min-w-0 truncate break-words">
-                {meal.name}
-              </span>
-            </CardTitle>
-            <CardDescription className="min-w-0 overflow-hidden text-ellipsis">
-              {meal.date.toDateString()}
-            </CardDescription>
+        <CardContent className="flex flex-row gap-2 text-sm items-start min-w-0">
+          {/* Description: single-line ellipsis to avoid horizontal scroll */}
+          <p className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap break-words">
+            {meal.description}
+          </p>
+
+          {/* Buttons shouldn't shrink and cause overflow */}
+          <div className="flex flex-row gap-2 mt-2 shrink-0">
+            <Button
+              variant="destructive"
+              onClick={() => {
+                setShowDuck(true);
+                // Hide after animation duration (e.g., 3s)
+
+                setTimeout(() => {
+                  removeMeal(meal.id);
+                  setShowDuck(false);
+                }, 3000);
+              }}
+            >
+              Missed
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                incrementSnack(Snacks.COOKIE, 5);
+                toast('You Received:', {
+                  description: (
+                    <span className="flex flex-row gap-1 text-orange-500">
+                      5
+                      <Cookie className="text-orange-500 inline-block" />
+                      <span>You can feed your Tamagochi now!</span>
+                    </span>
+                  ),
+                  action: {
+                    label: 'Feed',
+                    onClick: () => router.push('/tamagochi'),
+                  },
+                });
+                removeMeal(meal.id);
+              }}
+            >
+              Eat
+            </Button>
           </div>
-
-          <CardAction className="shrink-0 ml-2">
-            <Link href={`/mealDetails/${encodeURIComponent(meal.id)}`}>
-              <Eye />
-            </Link>
-          </CardAction>
-        </div>
-      </CardHeader>
-
-      <CardContent className="flex flex-row gap-2 text-sm items-start min-w-0">
-        {/* Description: single-line ellipsis to avoid horizontal scroll */}
-        <p className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap break-words">
-          {meal.description}
-        </p>
-
-        {/* Buttons shouldn't shrink and cause overflow */}
-        <div className="flex flex-row gap-2 mt-2 shrink-0">
-          <Button variant="destructive" onClick={() => removeMeal(meal.id)}>
-            Missed
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              incrementSnack(Snacks.COOKIE, 5);
-              toast('You Received:', {
-                description: (
-                  <span className="flex flex-row gap-1 text-orange-500">
-                    5
-                    <Cookie className="text-orange-500 inline-block" />
-                    <span>You can feed your Tamagochi now!</span>
-                  </span>
-                ),
-                action: {
-                  label: 'Feed',
-                  onClick: () => router.push('/tamagochi'),
-                },
-              });
-              removeMeal(meal.id);
-            }}
-          >
-            Eat
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
       <div className="relative">
-      {showDuck &&
-        createPortal(
-          <div className="fixed bottom-[-200px] left-1/2 transform -translate-x-1/2 z-[9999] animate-duck ">
-            <img src={"/tamagochiSad.svg"}/>
-          </div>,
-          document.body
-        )}
-      
-      <style jsx>{`
-        @keyframes duckPop {
-          0% {
-            bottom: -200px;
-            transform: translateX(-20%) scale(3);
-            opacity: 0;
+        {showDuck &&
+          createPortal(
+            <div className="fixed bottom-[-200px] left-1/2 transform -translate-x-1/2 z-[9999] animate-duck ">
+              <img src={'/tamagochiSad.svg'} />
+            </div>,
+            document.body
+          )}
+
+        <style jsx>{`
+          @keyframes duckPop {
+            0% {
+              bottom: -200px;
+              transform: translateX(-20%) scale(3);
+              opacity: 0;
+            }
+            30% {
+              bottom: 50px;
+              transform: translateX(-10%) scale(3);
+              opacity: 1;
+            }
+            70% {
+              bottom: 50px;
+              transform: translateX(10%) scale(3);
+              opacity: 1;
+            }
+            70.001% {
+              bottom: 50px;
+              transform: translateX(10%) scale(3) scaleX(-1);
+              opacity: 1;
+            }
+            100% {
+              bottom: 0px;
+              transform: translateX(-100%) scale(3) rotate(-25deg) scaleX(-1);
+              opacity: 0;
+            }
           }
-          30% {
-            bottom: 50px;
-            transform: translateX(-10%) scale(3);
-            opacity: 1;
+          .animate-duck {
+            animation: duckPop 3s ease-in-out forwards;
           }
-          70% {
-            bottom: 50px;
-            transform: translateX(10%) scale(3);
-            opacity: 1;
-          }
-          70.001% {
-            bottom: 50px;
-            transform: translateX(10%) scale(3) scaleX(-1);
-            opacity: 1;
-          }
-          100% {
-            bottom: 0px;
-            transform: translateX(-100%) scale(3) rotate(-25deg) scaleX(-1);
-            opacity: 0;
-          }
-        }
-        .animate-duck {
-          animation: duckPop 3s ease-in-out forwards;
-        }
-      `}</style>
-    </div>
+        `}</style>
+      </div>
     </div>
   );
 }
