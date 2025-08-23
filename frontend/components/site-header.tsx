@@ -2,7 +2,15 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, Home, Users, Settings, LogIn } from 'lucide-react';
+import {
+  Menu,
+  Home,
+  Users,
+  Settings,
+  LogIn,
+  LogOut,
+  CircleUser,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -27,7 +35,7 @@ export function SiteHeader() {
         <SheetContent side="left" className="w-[85vw] p-0">
           <div className="px-4 pb-3 pt-4">
             <SheetHeader>
-              <SheetTitle className="text-left">My App</SheetTitle>
+              <SheetTitle className="text-left">Säg du</SheetTitle>
             </SheetHeader>
           </div>
           <Separator />
@@ -35,31 +43,11 @@ export function SiteHeader() {
           <nav className="flex flex-col gap-1 p-2">
             <SheetClose asChild>
               <Link
-                href="/"
+                href="/preferences"
                 className="rounded-md px-3 py-3 text-base hover:bg-muted"
               >
                 <div className="flex items-center gap-3">
-                  <Home className="h-4 w-4" /> <span>Home</span>
-                </div>
-              </Link>
-            </SheetClose>
-            <SheetClose asChild>
-              <Link
-                href="/users"
-                className="rounded-md px-3 py-3 text-base hover:bg-muted"
-              >
-                <div className="flex items-center gap-3">
-                  <Users className="h-4 w-4" /> <span>Users</span>
-                </div>
-              </Link>
-            </SheetClose>
-            <SheetClose asChild>
-              <Link
-                href="/settings"
-                className="rounded-md px-3 py-3 text-base hover:bg-muted"
-              >
-                <div className="flex items-center gap-3">
-                  <Settings className="h-4 w-4" /> <span>Settings</span>
+                  <Settings className="h-4 w-4" /> <span>Preferences</span>
                 </div>
               </Link>
             </SheetClose>
@@ -70,7 +58,7 @@ export function SiteHeader() {
                 className="rounded-md px-3 py-3 text-base hover:bg-muted"
               >
                 <div className="flex items-center gap-3">
-                  <LogIn className="h-4 w-4" /> <span>Login</span>
+                  <LogOut className="h-4 w-4" /> <span>Logout</span>
                 </div>
               </Link>
             </SheetClose>
@@ -80,14 +68,12 @@ export function SiteHeader() {
 
       {/* Brand */}
       <Link href="/" className="font-semibold tracking-tight">
-        My App
+        Säg du
       </Link>
 
       {/* Right action */}
       <Link href="/login">
-        <Button variant="outline" size="sm">
-          Sign in
-        </Button>
+        <CircleUser className="h-6 w-6" />
       </Link>
     </div>
   );
