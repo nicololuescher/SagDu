@@ -1,4 +1,4 @@
-from typing import TypedDict, Dict, Any, List
+from typing import TypedDict, Dict, Any, List, Optional
 from datetime import date
 
 class User(TypedDict):
@@ -11,7 +11,7 @@ class User(TypedDict):
     gluten_free: bool
     lactose_free: bool
     soy_free: bool
-    inventory: Dict[str, float] | None
+    inventory: Optional[Dict[str, float]]
 
 class User_Ingredient(TypedDict):
     user_id: int
@@ -62,4 +62,4 @@ class Menu_Ingredient(TypedDict):
 class ResponseMessage(TypedDict):
     data: Any
     status: str
-    error: str | None
+    error: Optional[str]

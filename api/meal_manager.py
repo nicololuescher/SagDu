@@ -1,5 +1,5 @@
 from database_adapter import DatabaseAdapter
-from datatypes import User, Ingredient, Meal, Menu, ResponseMessage
+from datatypes import User, ResponseMessage
 
 class MealManager:
     def __init__(self, db: DatabaseAdapter):

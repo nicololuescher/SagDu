@@ -62,23 +62,26 @@ class DatabaseAdapter:
     def _ensure_connection(self) -> PGConnection:
         if self.connection is None and not self.connect():
             raise RuntimeError("Could not connect to database")
-        assert self.connection is not None  # for type checkers
+        assert self.connection is not None
         return self.connection
 
     def _query(self, query: str, params: Sequence[Any]) -> Rows:
         """
-        Run any SQL. For SELECT, returns fetched rows.
-        For non-SELECT, commits and returns [].
-        Raises on DB errors.
+        Run any SQL. If the statement produces a result set (e.g., SELECT or
+        INSERT/UPDATE/DELETE ... RETURNING), fetch and return those rows.
+        For DML, commit the transaction.
         """
         conn = self._ensure_connection()
         with conn.cursor() as cur:
             cur.execute(query, tuple(params))
-            if query.lstrip().upper().startswith("SELECT"):
-                rows = Rows, cur.fetchall()
-                return rows
-            conn.commit()
-            return []
+            has_rows = cur.description is not None
+            rows: Rows = cur.fetchall() if has_rows else []
+
+            # Commit for DML (anything that's not a plain SELECT), even if it RETURNs rows
+            if not query.lstrip().upper().startswith("SELECT"):
+                conn.commit()
+
+            return rows
 
     def _query_one(self, query: str, params: Sequence[Any]) -> Optional[Row]:
         rows = self._query(query, params)
@@ -377,7 +380,9 @@ class DatabaseAdapter:
         )
 
     def delete_ingredient(self, ingredient_id: int) -> bool:
-        return self._execute("DELETE FROM app.ingredient WHERE id = %s", (ingredient_id,))
+        return self._execute(
+            "DELETE FROM app.ingredient WHERE id = %s", (ingredient_id,)
+        )
 
     # --- Menus -------------------------------------------------------------
 
@@ -512,7 +517,7 @@ class DatabaseAdapter:
             "name": cast(str, row[4]),
             "description": cast(str, row[5]),
             "people": cast(int, row[6]),
-            "menu_id": cast(Optional[int], row[7]),
+            "menu_id": cast(int, row[7]),
         }
 
     def list_meals_by_user(
@@ -547,7 +552,7 @@ class DatabaseAdapter:
                 "name": cast(str, r[4]),
                 "description": cast(str, r[5]),
                 "people": cast(int, r[6]),
-                "menu_id": cast(Optional[int], r[7]),
+                "menu_id": cast(int, r[7]),
             }
             for r in rows
         ]
@@ -572,7 +577,15 @@ class DatabaseAdapter:
         return cast(Optional[int], row[0] if row else None)
 
     def update_meal(self, meal_id: int, **fields: Any) -> bool:
-        allowed = {"user_id", "date", "type", "name", "description", "people", "menu_id"}
+        allowed = {
+            "user_id",
+            "date",
+            "type",
+            "name",
+            "description",
+            "people",
+            "menu_id",
+        }
         cols: List[str] = []
         vals: List[Any] = []
         for k, v in fields.items():
