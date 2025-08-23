@@ -150,14 +150,14 @@ ON CONFLICT (menu_id, ingredient_id) DO UPDATE SET quantity = EXCLUDED.quantity;
 -- Breakfasts
 WITH bmenu AS (SELECT id FROM menu WHERE name='Demo Breakfast')
 INSERT INTO meal (user_id, date, type, name, description, people, menu_id) VALUES
-  (1, DATE '2024-06-01', 'breakfast', 'Oats & Banana',            'Classic bowl',                    1, (SELECT id FROM bmenu)),
-  (1, DATE '2024-06-02', 'breakfast', 'Greek Yogurt Bowl',        'Yogurt, oats, banana',            1, (SELECT id FROM bmenu)),
-  (1, DATE '2024-06-03', 'breakfast', 'Eggs, Spinach & Tomato',   'Scramble with veggies',           1, (SELECT id FROM bmenu));
+  (1, DATE '2025-08-23', 'breakfast', 'Oats & Banana',            'Classic bowl',                    1, (SELECT id FROM bmenu)),
+  (1, DATE '2025-08-24', 'breakfast', 'Greek Yogurt Bowl',        'Yogurt, oats, banana',            1, (SELECT id FROM bmenu)),
+  (1, DATE '2025-08-25', 'breakfast', 'Eggs, Spinach & Tomato',   'Scramble with veggies',           1, (SELECT id FROM bmenu));
 
 WITH
-b1 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2024-06-01' AND type='breakfast'),
-b2 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2024-06-02' AND type='breakfast'),
-b3 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2024-06-03' AND type='breakfast')
+b1 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2025-08-23' AND type='breakfast'),
+b2 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2025-08-24' AND type='breakfast'),
+b3 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2025-08-25' AND type='breakfast')
 INSERT INTO meal_ingredient (meal_id, ingredient_id, quantity)
 SELECT * FROM (
   SELECT (SELECT meal_id FROM b1), 1,   40.000 UNION ALL  -- oats 40 g
@@ -177,14 +177,14 @@ ON CONFLICT (meal_id, ingredient_id) DO UPDATE SET quantity = EXCLUDED.quantity;
 -- Lunches
 WITH lmenu AS (SELECT id FROM menu WHERE name='Demo Lunch')
 INSERT INTO meal (user_id, date, type, name, description, people, menu_id) VALUES
-  (1, DATE '2024-06-01', 'lunch', 'Chicken Rice Bowl', 'Grilled chicken, rice, broccoli', 1, (SELECT id FROM lmenu)),
-  (1, DATE '2024-06-02', 'lunch', 'Pasta Primavera',   'Pasta with tomato and spinach',   1, (SELECT id FROM lmenu)),
-  (1, DATE '2024-06-03', 'lunch', 'Salmon & Rice',     'Seared salmon with rice',         1, (SELECT id FROM lmenu));
+  (1, DATE '2025-08-23', 'lunch', 'Chicken Rice Bowl', 'Grilled chicken, rice, broccoli', 1, (SELECT id FROM lmenu)),
+  (1, DATE '2025-08-24', 'lunch', 'Pasta Primavera',   'Pasta with tomato and spinach',   1, (SELECT id FROM lmenu)),
+  (1, DATE '2025-08-25', 'lunch', 'Salmon & Rice',     'Seared salmon with rice',         1, (SELECT id FROM lmenu));
 
 WITH
-l1 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2024-06-01' AND type='lunch'),
-l2 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2024-06-02' AND type='lunch'),
-l3 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2024-06-03' AND type='lunch')
+l1 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2025-08-23' AND type='lunch'),
+l2 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2025-08-24' AND type='lunch'),
+l3 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2025-08-25' AND type='lunch')
 INSERT INTO meal_ingredient (meal_id, ingredient_id, quantity)
 SELECT * FROM (
   SELECT (SELECT meal_id FROM l1), 5, 150.000 UNION ALL
@@ -205,14 +205,14 @@ ON CONFLICT (meal_id, ingredient_id) DO UPDATE SET quantity = EXCLUDED.quantity;
 -- Dinners
 WITH dmenu AS (SELECT id FROM menu WHERE name='Demo Dinner')
 INSERT INTO meal (user_id, date, type, name, description, people, menu_id) VALUES
-  (1, DATE '2024-06-01', 'dinner', 'Salmon Pasta',      'Salmon with pasta & spinach', 1, (SELECT id FROM dmenu)),
-  (1, DATE '2024-06-02', 'dinner', 'Chicken & Greens',  'Chicken, spinach, tomatoes',  1, (SELECT id FROM dmenu)),
-  (1, DATE '2024-06-03', 'dinner', 'Yogurt & Oats',     'Light dinner bowl',           1, (SELECT id FROM dmenu));
+  (1, DATE '2025-08-23', 'dinner', 'Salmon Pasta',      'Salmon with pasta & spinach', 1, (SELECT id FROM dmenu)),
+  (1, DATE '2025-08-24', 'dinner', 'Chicken & Greens',  'Chicken, spinach, tomatoes',  1, (SELECT id FROM dmenu)),
+  (1, DATE '2025-08-25', 'dinner', 'Yogurt & Oats',     'Light dinner bowl',           1, (SELECT id FROM dmenu));
 
 WITH
-d1 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2024-06-01' AND type='dinner'),
-d2 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2024-06-02' AND type='dinner'),
-d3 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2024-06-03' AND type='dinner')
+d1 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2025-08-23' AND type='dinner'),
+d2 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2025-08-24' AND type='dinner'),
+d3 AS (SELECT id AS meal_id FROM meal WHERE user_id=1 AND date=DATE '2025-08-25' AND type='dinner')
 INSERT INTO meal_ingredient (meal_id, ingredient_id, quantity)
 SELECT * FROM (
   SELECT (SELECT meal_id FROM d1), 10,150.000 UNION ALL

@@ -10,6 +10,7 @@ from flask import Flask, jsonify, request, Response
 from werkzeug.exceptions import HTTPException
 
 from database_adapter import DatabaseAdapter
+from datetime import timedelta
 from datatypes import (
     User, UserCreate, UserUpdate,
     Ingredient, IngredientCreate, IngredientUpdate,
@@ -265,11 +266,9 @@ def create_app() -> Flask:
 
     @app.get("/users/<int:user_id>/meals")
     def list_meals_for_user_on_date_endpoint(user_id: int) -> Tuple[Response, int]:
-        ds = request.args.get("date")
-        if not ds:
-            raise APIError(400, "missing_param", 'Query param "date" (YYYY-MM-DD) is required')
-        day = parse_iso_date(ds)
-        meals = db.list_meals_by_user(user_id, day, day)
+        date_from = date.today()
+        date_to = date.today() + timedelta(days=7)
+        meals = db.list_meals_by_user(user_id, date_from, date_to)
         return jsonify(meals), 200
 
     @app.get("/meals/<int:meal_id>/ingredients")
@@ -291,4 +290,4 @@ def create_app() -> Flask:
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")), debug=True)
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "4000")), debug=True)
