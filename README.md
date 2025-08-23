@@ -15,6 +15,7 @@
 <p align="center">
   <img alt="Version" src="https://img.shields.io/github/v/tag/nicololuescher/sagdu" />
   <img alt="Contributors" src="https://img.shields.io/github/contributors/nicololuescher/sagdu" />
+  <img alt="Commit Activity" src="https://img.shields.io/github/commit-activity/w/nicololuescher/sagdu" />
   <a href="https://github.com/nicololuescher/sagdu"><img
     src="https://img.shields.io/github/license/nicololuescher/sagdu"
     alt="License"
