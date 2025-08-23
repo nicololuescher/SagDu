@@ -1,14 +1,7 @@
 'use client';
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardAction,
-} from "@/components/ui/card";
-import { useEffect, useState, useRef } from "react";
+import { Card, CardAction } from '@/components/ui/card';
+import { useEffect, useState, useRef } from 'react';
 import {
   Select,
   SelectContent,
@@ -17,15 +10,17 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/selectCookie";
-import { motion, useAnimation } from "framer-motion";
-import { SnackIcon } from "@/components/SnackIcon";
-import { Progress } from "@/components/ui/progress";
-import { useUserStore } from "@/lib/store/user";
+} from '@/components/ui/selectCookie';
+import { motion } from 'framer-motion';
+import { SnackIcon } from '@/components/SnackIcon';
+import { Progress } from '@/components/ui/progress';
+import { useUserStore } from '@/lib/store/user';
 import { Snacks } from '@/types/enums/ISnacks';
+import Image from 'next/image';
 
 export default function Tamagochi() {
-const { user, decrementSnack, getSnackQuantity, getDuckHealth, setDuckHealth } = useUserStore();
+  const { decrementSnack, getSnackQuantity, getDuckHealth, setDuckHealth } =
+    useUserStore();
   const [displayState, setDisplayState] = useState({
     x: 100,
     y: 400,
@@ -50,8 +45,8 @@ const { user, decrementSnack, getSnackQuantity, getDuckHealth, setDuckHealth } =
         let y = prev.y + (Math.random() - 0.5) * 100;
         y = Math.max(250, y);
         y = Math.min(480, y);
-        let lookRight = prev.x > x;
-        let eating = prev.eating;
+        const lookRight = prev.x > x;
+        const eating = prev.eating;
         return { x, y, lookRight, eating };
       });
     }, 2500);
@@ -103,12 +98,12 @@ const { user, decrementSnack, getSnackQuantity, getDuckHealth, setDuckHealth } =
       })),
     ]);
 
-    useSnack(selectedAction);
+    giveSnack(selectedAction);
   };
 
-  const useSnack = (snack: Snacks) => {
-    setDuckHealth(Math.min(getDuckHealth() + 10, 100))
-    decrementSnack(snack, 1)
+  const giveSnack = (snack: Snacks) => {
+    setDuckHealth(Math.min(getDuckHealth() + 10, 100));
+    decrementSnack(snack, 1);
   };
 
   //Cleanup spawned objects that were created on click
@@ -134,7 +129,7 @@ const { user, decrementSnack, getSnackQuantity, getDuckHealth, setDuckHealth } =
             x={displayState.x}
             y={displayState.y}
             eating={displayState.eating}
-          ></TamagochiSVG>
+          />
         </div>
         {spawnedItems.map((item) => (
           <motion.div
@@ -148,11 +143,13 @@ const { user, decrementSnack, getSnackQuantity, getDuckHealth, setDuckHealth } =
           </motion.div>
         ))}
         <CardAction className="absolute bottom-2 right-2">
-          <div className="bg-black rounded-full w-[8dvh] h-[8dvh] flex justify-center items-center">
+          <div className="bg-accent rounded-full w-[8dvh] h-[8dvh] flex justify-center items-center">
             <Select
               defaultValue="cookie"
               value={selectedAction}
-              onValueChange={(value: string) => setSelectedAction(value as Snacks)}
+              onValueChange={(value: string) =>
+                setSelectedAction(value as Snacks)
+              }
             >
               <SelectTrigger>
                 <SelectValue />
@@ -185,8 +182,8 @@ const { user, decrementSnack, getSnackQuantity, getDuckHealth, setDuckHealth } =
 
 export function TamagochiSVG(props: {
   flipped: boolean;
-  x: Number;
-  y: Number;
+  x: number;
+  y: number;
   eating: boolean;
 }) {
   let fullClassName = 'relative transition-all duration-500 w-full h-full';
@@ -201,10 +198,13 @@ export function TamagochiSVG(props: {
   }
 
   return (
-    <img
+    <Image
       src={source}
+      width={0}
+      height={0}
       style={{ left: `${props.x}px`, top: `${props.y}px` }}
       className={fullClassName}
-    ></img>
+      alt="SägDuck Tamagochi"
+    />
   );
 }
