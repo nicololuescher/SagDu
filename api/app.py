@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 from database_adapter import DatabaseAdapter
+from meal_manager import MealManager
 
 app = Flask(__name__)
 db_adapter = DatabaseAdapter(
@@ -11,6 +12,8 @@ db_adapter = DatabaseAdapter(
     port=int(os.environ.get("DB_PORT", 5432))
 )
 
+meal_manager = MealManager(db_adapter)
+
 @app.route('/')
 def index():
     return "root"
@@ -19,10 +22,15 @@ def index():
 
 @app.get('/user/<int:user_id>')
 def get_user(user_id: int):
-    user = db_adapter.get_user(user_id)
-    if user:
-        return user
-    return {"error": "User not found"}, 404
+    user = meal_manager.get_user(user_id)
+    if user['status'] == 'success' and user['error'] is None:
+        return user['data'], 200
+    elif user['status'] == 'not_connected':
+        return {"error": user['error']}, 503
+    elif user['status'] == 'not_found':
+        return {"error": user['error']}, 404
+    else:
+        return {"error": user['error']}, 500
 
 @app.get('/ingredient/<int:ingredient_id>')
 def get_ingredient(ingredient_id: int):

@@ -82,7 +82,7 @@ class DatabaseAdapter:
         except Exception as e:
             raise e
 
-    def get_user(self, user_id: int) -> User|None:
+    def get_user(self, user_id: int) -> User|Exception|None:
         """
         Retrieve a user by their ID.
         :param user_id: ID of the user to retrieve.
@@ -90,7 +90,7 @@ class DatabaseAdapter:
         """
         if not self.connection:
             if not self.connect():
-                return None
+                return Exception("Could not connect to database")
         try:
             result_user = self._query("SELECT * FROM app.user WHERE id = %s", (user_id,))
             result_inventory = self._query("SELECT ingredient_id, quantity FROM app.inventory WHERE user_id = %s", (user_id,))
@@ -105,6 +105,7 @@ class DatabaseAdapter:
                 )
         except Exception as e:
             print(f"Error retrieving user: {e}")
+            return e
         return None
     
     def create_user(self, user: User) -> bool:

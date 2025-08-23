@@ -26,3 +26,8 @@ class Menu(TypedDict):
     name: str
     description: str
     recipe: Dict[str, Any]
+
+class ResponseMessage(TypedDict):
+    data: Any
+    status: str
+    error: str | None
