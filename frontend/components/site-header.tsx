@@ -9,6 +9,7 @@ import {
   CircleUser,
   Home,
   Users,
+  WalletCards,
   Egg,
   Utensils,
 } from 'lucide-react';
@@ -51,6 +52,16 @@ export function SiteHeader() {
               >
                 <div className="flex items-center gap-3">
                   <Utensils className="h-4 w-4" /> <span>Meals</span>
+                </div>
+              </Link>
+            </SheetClose>
+                        <SheetClose asChild>
+              <Link
+                href="/shoppingList"
+                className="rounded-md px-3 py-3 text-base hover:bg-muted"
+              >
+                <div className="flex items-center gap-3">
+                  <WalletCards className="h-4 w-4" /> <span>Shopping List</span>
                 </div>
               </Link>
             </SheetClose>
