@@ -10,6 +10,8 @@ import {
   LogIn,
   LogOut,
   CircleUser,
+  Utensils,
+  Egg,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -57,7 +59,7 @@ export function SiteHeader() {
                 className="rounded-md px-3 py-3 text-base hover:bg-muted"
               >
                 <div className="flex items-center gap-3">
-                  <Home className="h-4 w-4" /> <span>Meals</span>
+                  <Utensils className="h-4 w-4" /> <span>Meals</span>
                 </div>
               </Link>
             </SheetClose>
@@ -73,7 +75,17 @@ export function SiteHeader() {
             </SheetClose>
             <SheetClose asChild>
               <Link
-                href="/settings"
+                href="/tamagochi"
+                className="rounded-md px-3 py-3 text-base hover:bg-muted"
+              >
+                <div className="flex items-center gap-3">
+                  <Egg className="h-4 w-4" /> <span>SagDuck</span>
+                </div>
+              </Link>
+            </SheetClose>
+            <SheetClose asChild>
+              <Link
+                href="/preferences"
                 className="rounded-md px-3 py-3 text-base hover:bg-muted"
               >
                 <div className="flex items-center gap-3">

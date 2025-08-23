@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <title>Minimal Green Duck Mascot — POG Face</title>
+  <desc>Minimal, original duck mascot in Duolingo-green with a wide open 'pog' mouth and surprised eyes.</desc>
+  <defs>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <g filter="url(#softShadow)">
+    <!-- Body -->
+    <path d="
+      M256,96
+      C330,96 392,154 392,228
+      C392,278 360,324 314,342
+      C305,346 300,356 303,365
+      C309,384 328,398 356,402
+      C322,418 286,416 268,396
+      C260,388 252,386 244,396
+      C226,418 190,418 156,402
+      C184,398 203,384 209,365
+      C212,356 207,346 198,342
+      C152,324 120,278 120,228
+      C120,154 182,96 256,96 Z"
+      fill="#58CC02" />
+    <!-- Wing (left) -->
+    <path d="
+      M190,256
+      C170,246 160,226 162,208
+      C164,188 182,172 204,170
+      C206,196 212,220 224,236
+      C210,242 198,250 190,256 Z" fill="#4EB802"/>
+    <!-- Wing (right) -->
+    <path d="
+      M322,256
+      C342,246 352,226 350,208
+      C348,188 330,172 308,170
+      C306,196 300,220 288,236
+      C302,242 314,250 322,256 Z" fill="#4EB802"/>
+    <!-- Head bump -->
+    <path d="
+      M256,120
+      C300,120 336,148 336,184
+      C336,200 324,214 306,220
+      C292,224 274,220 256,220
+      C238,220 220,224 206,220
+      C188,214 176,200 176,184
+      C176,148 212,120 256,120 Z" fill="#58CC02"/>
+    <!-- Eyes (surprised) -->
+    <circle cx="220" cy="184" r="30" fill="#FFFFFF"/>
+    <circle cx="292" cy="184" r="30" fill="#FFFFFF"/>
+    <circle cx="226" cy="188" r="12" fill="#1B1B1B"/>
+    <circle cx="298" cy="188" r="12" fill="#1B1B1B"/>
+    <!-- Eyebrows -->
+    <path d="M192,156 C206,148 234,148 248,156" stroke="#1B1B1B" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M264,156 C278,148 306,148 320,156" stroke="#1B1B1B" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <!-- Beak: POG (wide open mouth) -->
+    <g id="beak_pog">
+      <!-- Upper beak rim -->
+      <path d="
+        M196,244
+        C220,232 292,232 316,244
+        C324,248 332,258 332,268
+        C308,260 204,260 180,268
+        C180,258 188,248 196,244 Z"
+        fill="#FF9E00"/>
+      <!-- Mouth cavity -->
+      <path d="
+        M188,268
+        C212,260 300,260 324,268
+        C336,272 344,286 344,304
+        C344,336 306,360 256,360
+        C206,360 168,336 168,304
+        C168,286 176,272 188,268 Z"
+        fill="#1B1B1B"/>
+      <!-- Lower beak rim -->
+      <path d="
+        M172,300
+        C196,324 228,340 256,340
+        C284,340 316,324 340,300
+        C340,312 336,322 330,330
+        C310,356 284,368 256,368
+        C228,368 202,356 182,330
+        C176,322 172,312 172,300 Z"
+        fill="#FF9E00"/>
+      <!-- Tongue (subtle) -->
+      <path d="M208,320 C228,336 284,336 304,320 C294,334 278,344 256,344 C234,344 218,334 208,320 Z"
+            fill="#FF6E6E" opacity="0.85"/>
+      <!-- Light crease on upper beak -->
+      <path d="M200,252 C224,246 288,246 312,252"
+            stroke="#E27F00" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </g>
+    <!-- Feet -->
+    <path d="M206,408 C214,424 230,432 244,432 C238,440 222,446 206,444 Z" fill="#FF9E00"/>
+    <path d="M306,408 C298,424 282,432 268,432 C274,440 290,446 306,444 Z" fill="#FF9E00"/>
+  </g>
+</svg>

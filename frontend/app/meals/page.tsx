@@ -40,17 +40,11 @@ const mockDays: Day[] = [
 ]
 
 export default function Meals() {
-  let previousDay = mockDays[0].date.getDate();
+  let previousDay = new Date().getDate();
 
   return (
     <Table className="caption-top">
       <TableCaption>Upcoming meals</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">
-          </TableHead>
-        </TableRow>
-      </TableHeader>
       <TableBody>
         {mockDays.map((day: Day) => {
           const showSeparator = previousDay !== day.date.getDate();
@@ -59,18 +53,18 @@ export default function Meals() {
           if (showSeparator) {
             return (
               <TableRow>
-                <TableCell className="font-medium">
-                <hr className="my-4 border-gray-300" />
-                <DayCard {...day}></DayCard>
+                <TableCell>
+                  <div className="py-3 text-center text-sm font-semibold text-gray-500">
+                    {day.date.toDateString()}
+                  </div>
+                  <DayCard {...day}></DayCard>
                 </TableCell>
               </TableRow>
             );
           }
 
-          //I want to show a verticle line but that breaks things because its inside a table
           return (
             <TableRow>
-
               <TableCell className="font-medium">
                 <DayCard {...day}></DayCard>
               </TableCell>
@@ -89,7 +83,7 @@ export function DayCard(day: Day) {
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
           <div className="flex items-center gap-2">
             <MealIcon type={day.type}></MealIcon>
-            {day.date.toLocaleDateString("en-US", { weekday: "long" })}
+            {day.type}
           </div>
         </CardTitle>
         <CardDescription>{day.date.toDateString()}</CardDescription>
