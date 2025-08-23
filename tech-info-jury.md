@@ -1,13 +1,11 @@
 # Informationen für technische Jury
 
 ## Aktueller Stand
-> [!NOTE]
 > •	Link zu Github Repository
 
 
 
 ## Ausgangslage
-> [!NOTE]
 > •	Worauf habt ihr euch fokussiert?
 > •	Welche technischen Grundsatzentscheide habt ihr gefällt?
 
@@ -19,7 +17,6 @@ Fokusgebiete für die technische Umsetzung:
 - Einsatz von Containerisierung (z.B. Docker) für eine konsistente Deployment-Umgebung
 
 ## Technischer Aufbau
-> [!NOTE]
 > •	Welche Komponenten und Frameworks habt ihr verwendet?
 > •	Wozu und wie werden diese eingesetzt?
 
@@ -55,13 +52,11 @@ Mit einem Docker Compose File [./infra/docker-compose.yaml](./infra/docker-compo
 > Eine Demo Version unserer Applikation wurde deployed in Azure auf einer Linux-VM mit Docker Compose und diese ist verschlüsselt erreichbar unter: [https://sagdu.nicolo.info](https://sagdu.nicolo.info)
 
 ## Implementation
-> [!NOTE]
 > •	Gibt es etwas Spezielles, was ihr zur Implementation erwähnen wollt?
 > •	Was ist aus technischer Sicht besonders cool an eurer Lösung?
 
 
 ## Abgrenzung
-> [!NOTE]
 >•	Welche Abgrenzungen habt ihr bewusst vorgenommen und damit nicht implementiert? Weshalb?
 
 Wir haben bewusst einige Features nicht implementiert:
