@@ -55,6 +55,7 @@ class Menu(TypedDict):
     id: int
     name: str
     description: str
+    type: str
     cooking_time: int
     recipe: List[Dict[str, Any]]
 

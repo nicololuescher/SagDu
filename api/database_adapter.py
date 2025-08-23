@@ -389,7 +389,7 @@ class DatabaseAdapter:
     def get_menu(self, menu_id: int) -> Optional[Menu]:
         row = self._query_one(
             """
-            SELECT id, name, description, cooking_time, recipe
+            SELECT id, name, description, type, cooking_time, recipe
             FROM app.menu
             WHERE id = %s
             """,
@@ -402,14 +402,15 @@ class DatabaseAdapter:
             "id": cast(int, row[0]),
             "name": cast(str, row[1]),
             "description": cast(Optional[str], row[2]) or "",
-            "cooking_time": cast(int, row[3]),
+            "type": cast(str, row[3]),
+            "cooking_time": cast(int, row[4]),
             "recipe": recipe,
         }
 
     def list_menus(self, limit: int = 100, offset: int = 0) -> List[Menu]:
         rows = self._query(
             """
-            SELECT id, name, description, cooking_time, recipe
+            SELECT id, name, description, type, cooking_time, recipe
             FROM app.menu
             ORDER BY name
             LIMIT %s OFFSET %s
@@ -423,8 +424,9 @@ class DatabaseAdapter:
                     "id": cast(int, r[0]),
                     "name": cast(str, r[1]),
                     "description": cast(Optional[str], r[2]) or "",
-                    "cooking_time": cast(int, r[3]),
-                    "recipe": cast(List[Dict[str, Any]], r[4] or []),
+                    "type": cast(str, r[3]),
+                    "cooking_time": cast(int, r[4]),
+                    "recipe": cast(List[Dict[str, Any]], r[5] or []),
                 }
             )
         return out

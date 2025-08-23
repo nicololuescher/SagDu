@@ -11,7 +11,6 @@ from werkzeug.exceptions import HTTPException
 
 from database_adapter import DatabaseAdapter
 from meal_manager import MealManager
-from datetime import timedelta
 from datatypes import (
     User, UserCreate, UserUpdate,
     Ingredient, IngredientCreate, IngredientUpdate,
@@ -269,10 +268,10 @@ def create_app() -> Flask:
 
     @app.get("/users/<int:user_id>/meals")
     def list_meals_for_user_on_date_endpoint(user_id: int) -> Tuple[Response, int]:
-        date_from = date.today()
-        date_to = date.today() + timedelta(days=7)
-        meals = db.list_meals_by_user(user_id, date_from, date_to)
-        return jsonify(meals), 200
+        meals = meal_manager.get_meals_of_user(user_id)
+        if meals["status"] != "success":
+            raise APIError(404, "not_found", "User not found")
+        return jsonify(meals["data"]), 200
 
     @app.get("/meals/<int:meal_id>/ingredients")
     def get_meal_ingredients_endpoint(meal_id: int) -> Tuple[Response, int]:

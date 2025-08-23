@@ -93,6 +93,7 @@ def main() -> None:
             "id": 0,  # placeholder; DB assigns real id
             "name": TEST_MENU_NAME,
             "description": "Simple test menu",
+            "type": "lunch",
             "cooking_time": 20,
             "recipe": [
                 {"preparation_time": 5, "preparation_type": "prep", "description": "Rinse rice"},
