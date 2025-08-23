@@ -1,4 +1,4 @@
-Stell dir vor, deine Woche ist stressfrei geplant: Frühstück, Mittag- und Abendessen – gleich für zwei Wochen im Voraus.
+Stell dir vor, deine Woche ist stressfrei geplant: Frühstück, Mittag- und Abendessen – gleich eine Wochen im Voraus.
 Unsere App baut deinen Plan exakt nach deinen Präferenzen: vegetarisch, vegan oder mit Rücksicht auf Allergien.
 Gleichzeitig hält sie deine Ziele im Blick: Protein, Kohlenhydrate, Fette und Kalorien – alles fein ausgewägt.
 
