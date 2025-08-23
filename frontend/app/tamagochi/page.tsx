@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Card,
@@ -7,9 +7,9 @@ import {
   CardDescription,
   CardContent,
   CardAction,
-} from "@/components/ui/card";
-import { useEffect, useState, useRef } from "react";
-import { Apple, Banana, Cookie, CupSoda, Drumstick } from "lucide-react";
+} from '@/components/ui/card';
+import { useEffect, useState, useRef } from 'react';
+import { Apple, Banana, Cookie, CupSoda, Drumstick } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -18,10 +18,10 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/selectCookie";
-import { motion, useAnimation } from "framer-motion";
-import { SnackIcon } from "@/components/SnackIcon";
-import { Progress } from "@/components/ui/progress";
+} from '@/components/ui/selectCookie';
+import { motion, useAnimation } from 'framer-motion';
+import { SnackIcon } from '@/components/SnackIcon';
+import { Progress } from '@/components/ui/progress';
 
 export default function Tamagochi() {
   const [displayState, setDisplayState] = useState({
@@ -30,7 +30,7 @@ export default function Tamagochi() {
     lookRight: false,
     eating: false,
   });
-  const [selectedAction, setSelectedAction] = useState<string>("cookie");
+  const [selectedAction, setSelectedAction] = useState<string>('cookie');
   const [currentHP, setCurrentHP] = useState<number>(42);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -40,11 +40,11 @@ export default function Tamagochi() {
   const nextId = useRef(0);
 
   const [items, setItems] = useState([
-    { id: "cookie", amount: 8 },
-    { id: "apple", amount: 4 },
-    { id: "banana", amount: 3 },
-    { id: "drumstick", amount: 7 },
-    { id: "cup-soda", amount: 5 },
+    { id: 'cookie', amount: 8 },
+    { id: 'apple', amount: 4 },
+    { id: 'banana', amount: 3 },
+    { id: 'drumstick', amount: 7 },
+    { id: 'cup-soda', amount: 5 },
   ]);
 
   //Move SagDuck in random directions
@@ -163,7 +163,7 @@ export default function Tamagochi() {
             key={item.id}
             initial={{ x: item.x, y: item.y, opacity: 1 }}
             animate={{ x: item.x + item.dx, y: item.y + item.dy, opacity: 0 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
+            transition={{ duration: 1.5, ease: 'easeOut' }}
             className="absolute pointer-events-none w-6 h-6"
           >
             <SnackIcon itemValue={item.type} />
@@ -211,15 +211,15 @@ export function TamagochiSVG(props: {
   y: Number;
   eating: boolean;
 }) {
-  let fullClassName = "relative transition-all duration-500 w-full h-full";
-  let source = "/tamagochi.svg";
+  let fullClassName = 'relative transition-all duration-500 w-full h-full';
+  let source = '/tamagochi.svg';
 
   if (props.eating) {
-    source = "/tamagochiEating.svg";
+    source = '/tamagochiEating.svg';
   }
 
   if (props.flipped) {
-    fullClassName += " -scale-x-100";
+    fullClassName += ' -scale-x-100';
   }
 
   return (

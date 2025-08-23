@@ -26,7 +26,7 @@ export const testMeals: IMeal[] = Array.from({ length: 14 }, (_, day) => {
 
   const result: IMeal[] = [
     {
-      id: `meal-${day + 1}-breakfast`,
+      id: `${day * 3 + 1}`,
       name: `Breakfast Day ${day + 1}`,
       date: new Date(baseDate),
       description: `Healthy breakfast for day ${day + 1}`,
@@ -49,7 +49,7 @@ export const testMeals: IMeal[] = Array.from({ length: 14 }, (_, day) => {
       macros: { calories: 300, protein: 10, carbs: 54, fat: 6 },
     },
     {
-      id: `meal-${day + 1}-lunch`,
+      id: `${day * 3 + 2}`,
       name: `Lunch Day ${day + 1}`,
       date: new Date(baseDate),
       description: `Nutritious lunch for day ${day + 1}`,
@@ -72,7 +72,7 @@ export const testMeals: IMeal[] = Array.from({ length: 14 }, (_, day) => {
       macros: { calories: 300, protein: 10, carbs: 54, fat: 6 },
     },
     {
-      id: `meal-${day + 1}-dinner`,
+      id: `${day * 3 + 3}`,
       name: `Dinner Day ${day + 1}`,
       date: new Date(baseDate),
       description: `Delicious dinner for day ${day + 1}`,
