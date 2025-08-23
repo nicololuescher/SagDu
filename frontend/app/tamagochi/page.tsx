@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardAction } from "@/components/ui/card";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Apple, Banana, Cookie, CupSoda, Drumstick } from 'lucide-react';
 import {
     Select,
@@ -12,12 +12,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/selectCookie"
-
+import { motion, useAnimation } from "framer-motion";
 
 export default function Tamagochi() {
-    let eating = false;
-    const [displayState, setDisplayState] = useState({ x: 100, y: 400, lookRight: false });
+    const [displayState, setDisplayState] = useState({ x: 100, y: 400, lookRight: false, eating: false });
+    const [selectedAction, setSelectedAction] = useState<string>("cookie");
+    const cardRef = useRef<HTMLDivElement>(null);
 
+    const [spawnedItems, setSpawnedItems] = useState<{ id: number; x: number; y: number; dx: number; dy: number; type: string }[]>([]);
+    const nextId = useRef(0);
+
+    //Move SagDuck in random directions
     useEffect(() => {
         const interval = setInterval(() => {
             setDisplayState(prev => {
@@ -28,7 +33,8 @@ export default function Tamagochi() {
                 y = Math.max(250, y)
                 y = Math.min(480, y)
                 let lookRight = prev.x > x;
-                return { x, y, lookRight };
+                let eating = prev.eating;
+                return { x, y, lookRight, eating };
             });
         }, 2500);
 
@@ -36,30 +42,91 @@ export default function Tamagochi() {
         return () => clearInterval(interval);
     }, []);
 
-    const handleClick = () => {
-        
+    //Spawn a cookie on the clicked position
+    const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!cardRef.current) return;
+
+        //Set eating flag temporarily to true to swap out SagDuck with its eating SVG
+        setDisplayState(prev => {
+            prev.eating = true;
+            return prev;
+        });
+        setTimeout(() => {
+            setDisplayState(prev => {
+                prev.eating = false;
+                return prev;
+            })
+        }, 1000);
+
+        //Click positions
+        const rect = cardRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const directions = [
+            { dx: -30, dy: -30 },
+            { dx: 30, dy: -30 },
+            { dx: -30, dy: 30 },
+            { dx: 30, dy: 30 },
+            { dx: 0, dy: -50 },
+        ];
+
+        setSpawnedItems(prev =>
+            [
+                ...prev,
+                ...directions.map(dir => ({
+                    id: nextId.current++,
+                    x: x - 10,
+                    y: y - 30,
+                    type: selectedAction,
+                    dx: dir.dx,
+                    dy: dir.dy,
+                })),
+            ]
+        );
     }
+
+    //Cleanup spawned objects that were created on click
+    useEffect(() => {
+        const timers = spawnedItems.map(item =>
+            setTimeout(() => {
+                setSpawnedItems(prev => prev.filter(i => i.id !== item.id));
+            }, 1500)
+        );
+        return () => timers.forEach(t => clearTimeout(t));
+    }, [spawnedItems]);
 
     return (
         <div className="relative h-full">
-            <Card className="relative h-full bg-[url('/images/TamagochiBackground.png')] bg-cover bg-center" onClick={handleClick}>
+            <Card className="relative h-full bg-[url('/images/TamagochiBackground.png')] bg-cover bg-center" onClick={handleClick} ref={cardRef}>
                 <div className="w-[25dvh] h-[25dvh]">
-                    <TamagochiSVG flipped={displayState.lookRight} x={displayState.x} y={displayState.y} eating={eating}></TamagochiSVG>
+                    <TamagochiSVG flipped={displayState.lookRight} x={displayState.x} y={displayState.y} eating={displayState.eating}></TamagochiSVG>
                 </div>
+                {spawnedItems.map(item => (
+                    <motion.div
+                        key={item.id}
+                        initial={{ x: item.x, y: item.y, opacity: 1 }}
+                        animate={{ x: item.x + item.dx, y: item.y + item.dy, opacity: 0 }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        className="absolute pointer-events-none w-6 h-6"
+                    >
+                        <ItemSVG itemValue={item.type} />
+                    </motion.div>
+                ))}
                 <CardAction className="absolute bottom-2 right-2">
                     <div className="bg-black rounded-full w-[8dvh] h-[8dvh] flex justify-center items-center">
-                        <Select defaultValue="cookie">
+                        <Select defaultValue="cookie" value={selectedAction} onValueChange={setSelectedAction}>
                             <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectLabel>Snacks</SelectLabel>
-                                    <SelectItem value="cookie"><Cookie></Cookie></SelectItem>
-                                    <SelectItem value="apple"><Apple></Apple></SelectItem>
-                                    <SelectItem value="banana"><Banana></Banana></SelectItem>
-                                    <SelectItem value="drumstick"><Drumstick></Drumstick></SelectItem>
-                                    <SelectItem value="cup-soda"><CupSoda></CupSoda></SelectItem>
+                                    <SelectItem value="cookie"><ItemSVG itemValue="cookie"></ItemSVG></SelectItem>
+                                    <SelectItem value="apple"><ItemSVG itemValue="apple"></ItemSVG></SelectItem>
+                                    <SelectItem value="banana"><ItemSVG itemValue="banana"></ItemSVG></SelectItem>
+                                    <SelectItem value="drumstick"><ItemSVG itemValue="drumstick"></ItemSVG></SelectItem>
+                                    <SelectItem value="cup-soda"><ItemSVG itemValue="cup-soda"></ItemSVG></SelectItem>
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
@@ -68,6 +135,17 @@ export default function Tamagochi() {
             </Card>
         </div>
     )
+}
+
+export function ItemSVG(props: { itemValue: string }) {
+    switch (props.itemValue) {
+        case "cookie": return (<Cookie color="orange"></Cookie>)
+        case "apple": return (<Apple color="red"></Apple>)
+        case "banana": return (<Banana color="yellow"></Banana>)
+        case "drumstick": return (<Drumstick color="brown"></Drumstick>)
+        case "cup-soda": return (<CupSoda></CupSoda>)
+    }
+    return (null)
 }
 
 export function TamagochiSVG(props: { flipped: boolean, x: Number, y: Number, eating: boolean }) {
