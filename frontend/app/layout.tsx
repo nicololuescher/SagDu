@@ -39,7 +39,7 @@ export default function RootLayout({
             </div>
           </header>
 
-          <main className="h-[100svh] overflow-hidden pt-[var(--header-h)]">
+          <main className="h-[100svh] overflow-auto pt-[var(--header-h)]">
             {children}
           </main>
         </QueryProvider>

@@ -2,7 +2,16 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, Settings, LogOut, CircleUser, Home, Users } from 'lucide-react';
+import {
+  Menu,
+  Settings,
+  LogOut,
+  CircleUser,
+  Home,
+  Users,
+  Egg,
+  Utensils,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -26,7 +35,9 @@ export function SiteHeader() {
         </SheetTrigger>
         <SheetContent side="left" className="w-[85vw] p-0">
           <div className="px-4 pb-3 pt-4">
-            <SheetHeader>
+            <SheetHeader className="flex flex-row gap-3">
+              <CircleUser className="h-6 w-6" />
+
               <SheetTitle className="text-left">Säg Du</SheetTitle>
             </SheetHeader>
           </div>
@@ -35,31 +46,11 @@ export function SiteHeader() {
           <nav className="flex flex-col gap-1 p-2">
             <SheetClose asChild>
               <Link
-                href="/preferences"
-                className="rounded-md px-3 py-3 text-base hover:bg-muted"
-              >
-                <div className="flex items-center gap-3">
-                  <Home className="h-4 w-4" /> <span>Home</span>
-                </div>
-              </Link>
-            </SheetClose>
-            <SheetClose asChild>
-              <Link
                 href="/meals"
                 className="rounded-md px-3 py-3 text-base hover:bg-muted"
               >
                 <div className="flex items-center gap-3">
                   <Utensils className="h-4 w-4" /> <span>Meals</span>
-                </div>
-              </Link>
-            </SheetClose>
-            <SheetClose asChild>
-              <Link
-                href="/users"
-                className="rounded-md px-3 py-3 text-base hover:bg-muted"
-              >
-                <div className="flex items-center gap-3">
-                  <Users className="h-4 w-4" /> <span>Users</span>
                 </div>
               </Link>
             </SheetClose>
@@ -99,14 +90,12 @@ export function SiteHeader() {
       </Sheet>
 
       {/* Brand */}
-      <Link href="/" className="font-semibold tracking-tight">
+      <Link href="/meals" className="font-semibold tracking-tight">
         Säg Du
       </Link>
 
       {/* Right action */}
-      <Link href="/login">
-        <CircleUser className="h-6 w-6" />
-      </Link>
+      <div></div>
     </div>
   );
 }

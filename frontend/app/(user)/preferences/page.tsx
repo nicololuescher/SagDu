@@ -24,11 +24,11 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 // import { Label } from '@/components/ui/label' // (unused, safe to remove)
 import { Slider } from '@/components/ui/slider';
 import { Separator } from '@/components/ui/separator';
 import { useQuery } from '@tanstack/react-query';
+import { DietaryCheckbox } from '@/components/dietary-checkbox';
 
 // ---- Schema ----
 const pctRange = z
@@ -210,7 +210,7 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle>Macro goals (ranges)</CardTitle>
               <CardDescription>
-                Set target ranges as % of daily calories.
+                Set target ranges as % of grams per day.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -219,7 +219,7 @@ export default function SettingsPage() {
                 control={form.control}
                 name="macros.protein"
                 min={0}
-                max={100}
+                max={50}
                 step={1}
                 unit="%"
               />
@@ -228,7 +228,7 @@ export default function SettingsPage() {
                 control={form.control}
                 name="macros.fat"
                 min={0}
-                max={100}
+                max={40}
                 step={1}
                 unit="%"
               />
@@ -237,7 +237,7 @@ export default function SettingsPage() {
                 control={form.control}
                 name="macros.carbs"
                 min={0}
-                max={100}
+                max={80}
                 step={1}
                 unit="%"
               />
@@ -322,39 +322,6 @@ function summarizeDietary(d: PreferencesValues['dietary']) {
       return k[0].toUpperCase() + k.slice(1);
     });
   return picks.join(', ');
-}
-
-type CheckboxFieldProps = {
-  name:
-    | 'dietary.vegetarian'
-    | 'dietary.vegan'
-    | 'dietary.celiac'
-    | 'dietary.lactose'
-    | 'dietary.soy';
-  label: string;
-  control: any;
-};
-
-function DietaryCheckbox({ name, label, control }: CheckboxFieldProps) {
-  return (
-    <FormField
-      control={control}
-      name={name as any}
-      render={({ field }) => (
-        <FormItem className="flex items-center gap-3 space-y-0">
-          <FormControl>
-            <Checkbox
-              checked={!!field.value}
-              onCheckedChange={(v) => field.onChange(v === true)} // ensure boolean
-            />
-          </FormControl>
-          <div className="grid leading-tight">
-            <FormLabel className="text-base">{label}</FormLabel>
-          </div>
-        </FormItem>
-      )}
-    />
-  );
 }
 
 type RangeFieldProps = {

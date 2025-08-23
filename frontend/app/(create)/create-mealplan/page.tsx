@@ -17,6 +17,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { PeopleStepper } from '@/components/people-stepper';
 import { useMealsStore, useUpdateMeal } from '@/lib/store/meals'; // adjust path if needed
 import IMeal from '@/types/interfaces/IMeal';
+import { Drawer } from '@/components/ui/drawer';
+import { EditDrawer } from '@/components/edit-drawer';
 
 type MealType = 'breakfast' | 'lunch' | 'dinner';
 const MEALS: MealType[] = ['breakfast', 'lunch', 'dinner'];
@@ -26,6 +28,8 @@ const MAX_COLUMNS = 14;
 export default function CreateMealsPage() {
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
+
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   // Pull all meals from the store
   const mealsById = useMealsStore((s) => s.mealsById);
@@ -189,13 +193,15 @@ export default function CreateMealsPage() {
                                 </span>
                               </div>
 
-                              <Link
+                              {/*                               <Link
                                 href={`/meals/${c.key}/${mealType}`}
                                 className="inline-flex rounded p-2 hover:bg-muted"
                                 aria-label={`Edit ${mealType} details for ${c.a11y}`}
-                              >
-                                <Settings className="h-5 w-5" />
-                              </Link>
+                              > */}
+                              <Settings
+                                className="h-5 w-5"
+                                onClick={() => setDrawerOpen(true)}
+                              />
                             </div>
 
                             {/* content */}
@@ -239,6 +245,9 @@ export default function CreateMealsPage() {
           </Table>
         </div>
       </div>
+      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <EditDrawer />
+      </Drawer>
     </div>
   );
 }
