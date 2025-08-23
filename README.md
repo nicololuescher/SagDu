@@ -1,7 +1,7 @@
 # SagDu - Clever planen, bewusster essen
 
 <p align="center">
-  <img height="130px" src="assets/logo.png" />
+  <img height="130px" src="assets/tamagochi.svg" />
 </p>
 
 <p align="center">
