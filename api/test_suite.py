@@ -119,6 +119,7 @@ def main() -> None:
             "description": "CRUD smoke test meal",
             "people": 2,
             "menu_id": menu_id,
+            "ingredients": None,
         }
         meal_id = adapter.create_meal(meal)
         assert meal_id is not None
