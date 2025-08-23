@@ -15,8 +15,12 @@ import {
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useUserStore } from "@/lib/store/user";
+import { guid } from 'zod';
 
 export default function LoginPage() {
+  const { user, setUser } = useUserStore();
+
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -42,6 +46,8 @@ export default function LoginPage() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.message || 'Invalid credentials');
       }
+
+      setUser({id: guid().toString(), name: email, email: email, duckHealth: 42})
 
       // success – redirect wherever makes sense in your app
       router.replace('/dashboard');

@@ -7,9 +7,8 @@ import {
   CardDescription,
   CardContent,
   CardAction,
-} from '@/components/ui/card';
-import { useEffect, useState, useRef } from 'react';
-import { Apple, Banana, Cookie, CupSoda, Drumstick } from 'lucide-react';
+} from "@/components/ui/card";
+import { useEffect, useState, useRef } from "react";
 import {
   Select,
   SelectContent,
@@ -18,34 +17,28 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/selectCookie';
-import { motion, useAnimation } from 'framer-motion';
-import { SnackIcon } from '@/components/SnackIcon';
-import { Progress } from '@/components/ui/progress';
+} from "@/components/ui/selectCookie";
+import { motion, useAnimation } from "framer-motion";
+import { SnackIcon } from "@/components/SnackIcon";
+import { Progress } from "@/components/ui/progress";
+import { useUserStore } from "@/lib/store/user";
+import { Snacks } from '@/types/enums/ISnacks';
 
 export default function Tamagochi() {
+const { user, decrementSnack, getSnackQuantity, getDuckHealth, setDuckHealth } = useUserStore();
   const [displayState, setDisplayState] = useState({
     x: 100,
     y: 400,
     lookRight: false,
     eating: false,
   });
-  const [selectedAction, setSelectedAction] = useState<string>('cookie');
-  const [currentHP, setCurrentHP] = useState<number>(42);
+  const [selectedAction, setSelectedAction] = useState<Snacks>(Snacks.APPLE);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const [spawnedItems, setSpawnedItems] = useState<
     { id: number; x: number; y: number; dx: number; dy: number; type: string }[]
   >([]);
   const nextId = useRef(0);
-
-  const [items, setItems] = useState([
-    { id: 'cookie', amount: 8 },
-    { id: 'apple', amount: 4 },
-    { id: 'banana', amount: 3 },
-    { id: 'drumstick', amount: 7 },
-    { id: 'cup-soda', amount: 5 },
-  ]);
 
   //Move SagDuck in random directions
   useEffect(() => {
@@ -71,7 +64,7 @@ export default function Tamagochi() {
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
 
-    if (!canUseSnack(selectedAction)) return;
+    if (getSnackQuantity(selectedAction) <= 0) return;
 
     //Set eating flag temporarily to true to swap out SagDuck with its eating SVG
     setDisplayState((prev) => {
@@ -113,24 +106,9 @@ export default function Tamagochi() {
     useSnack(selectedAction);
   };
 
-  const useSnack = (id: string) => {
-    setCurrentHP((prevHP) => {
-      console.log(Math.min(prevHP + 10, 100));
-      return Math.min(prevHP + 10, 100);
-    });
-
-    setItems((prev) =>
-      prev.map((item) => {
-        let newAmount = item.amount - 1;
-
-        return item.id === id ? { ...item, amount: newAmount } : item;
-      })
-    );
-  };
-
-  const canUseSnack = (id: string): boolean => {
-    const item = items.find((item) => item.id === id);
-    return item !== undefined && item.amount > 0;
+  const useSnack = (snack: Snacks) => {
+    setDuckHealth(Math.min(getDuckHealth() + 10, 100))
+    decrementSnack(snack, 1)
   };
 
   //Cleanup spawned objects that were created on click
@@ -174,7 +152,7 @@ export default function Tamagochi() {
             <Select
               defaultValue="cookie"
               value={selectedAction}
-              onValueChange={setSelectedAction}
+              onValueChange={(value: string) => setSelectedAction(value as Snacks)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -182,10 +160,10 @@ export default function Tamagochi() {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Snacks</SelectLabel>
-                  {items.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      <SnackIcon itemValue={item.id}></SnackIcon>
-                      {item.amount}x
+                  {Object.values(Snacks).map((snack) => (
+                    <SelectItem key={snack} value={snack}>
+                      <SnackIcon itemValue={snack}></SnackIcon>
+                      {getSnackQuantity(snack)}x
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -195,9 +173,9 @@ export default function Tamagochi() {
         </CardAction>
       </Card>
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium">{currentHP}%</span>
+        <span className="text-sm font-medium">{getDuckHealth()}%</span>
         <Progress
-          value={currentHP}
+          value={getDuckHealth()}
           className="bg-gray-200 [&>div]:bg-green-500"
         />
       </div>

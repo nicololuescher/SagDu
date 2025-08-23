@@ -1,9 +1,10 @@
 import { Snacks } from '../enums/ISnacks';
 
-export interface IUser {
+export default interface IUser {
   id: string;
   email: string;
   name: string;
   avatarUrl?: string;
-  snacks: Snacks[];
+  snacks: Record<Snacks, number>;
+  duckHealth: number;
 }

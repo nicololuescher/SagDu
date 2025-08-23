@@ -22,6 +22,7 @@ import './globals.css';
 import { SiteHeader } from '@/components/site-header';
 import QueryProvider from '@/components/query-provider';
 import MealsBridge from '@/components/meals-bridge';
+import UserBridge from '@/components/user-bridge';
 
 export default function RootLayout({
   children,
@@ -34,6 +35,7 @@ export default function RootLayout({
         <Toaster />
         <QueryProvider>
           <MealsBridge />
+          <UserBridge />
 
           <header className="fixed inset-x-0 top-0 z-40 h-[var(--header-h)] border-b bg-background">
             <div className="h-full">
