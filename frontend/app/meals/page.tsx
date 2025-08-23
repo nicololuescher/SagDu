@@ -17,19 +17,16 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Eye, Plus } from 'lucide-react';
+import { Cookie, Eye, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { MealIcon } from '@/components/ui/mealicon';
 import { Button } from '@/components/ui/button';
 import IMeal from '@/types/interfaces/IMeal';
 import { MealType } from '@/types/enums/mealType';
-
-//This is just for testing. Will need to implement a correct struct later
-type Day = {
-  date: Date;
-  meal: string;
-  type: string;
-};
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { useMealsStore } from '@/lib/store/meals';
+import React from 'react';
 
 const mockMeals: IMeal[] = [
   {
@@ -114,6 +111,13 @@ const mockMeals: IMeal[] = [
 export default function Meals() {
   let previousDay = new Date().getDate();
 
+  // Pull all meals from the store
+  const mealsById = useMealsStore((s) => s.mealsById);
+  const meals = React.useMemo(
+    () => Object.values(mealsById).filter((m) => m.selected),
+    [mealsById]
+  );
+
   return (
     <Table className="caption-top">
       <TableCaption className="flex items-center justify-between">
@@ -124,7 +128,7 @@ export default function Meals() {
         </Link>
       </TableCaption>
       <TableBody>
-        {mockMeals.map((meal: IMeal) => {
+        {meals.map((meal: IMeal) => {
           const showSeparator = previousDay !== meal.date.getDate();
           previousDay = meal.date.getDate();
 
@@ -155,6 +159,9 @@ export default function Meals() {
 }
 
 export function DayCard(meal: IMeal) {
+  const router = useRouter();
+  const removeMeal = useMealsStore((s) => s.removeMeal);
+
   return (
     <Card className="grid gap-4">
       <CardHeader>
@@ -172,11 +179,32 @@ export function DayCard(meal: IMeal) {
           </Link>
         </CardAction>
       </CardHeader>
-      <CardContent className="flex-col items-start gap-1.5 text-sm">
+      <CardContent className="flex flex-row gap-1.5 text-sm items-center justify-between">
         {meal.name}
         <div className="flex flex-row gap-2 mt-2">
-          <Button variant="outline">Ate</Button>
-          <Button variant="destructive">Didn&apos;t Eat</Button>
+          <Button variant="destructive" onClick={() => removeMeal(meal.id)}>
+            Missed
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() =>
+              toast('You Received:', {
+                description: (
+                  <span className="flex flex-row gap-1 text-orange-500">
+                    5
+                    <Cookie className="text-orange-500 inline-block" />
+                    <span>You can feed your Tamagochi now!</span>
+                  </span>
+                ),
+                action: {
+                  label: 'Feed',
+                  onClick: () => router.push('/tamagochi'),
+                },
+              })
+            }
+          >
+            Eat
+          </Button>
         </div>
       </CardContent>
     </Card>
