@@ -14,6 +14,7 @@
 
 <p align="center">
   <img alt="Version" src="https://img.shields.io/github/v/tag/nicololuescher/sagdu" />
+  <img alt="Contributors" src="https://img.shields.io/github/contributors/nicololuescher/sagdu" />
   <a href="https://github.com/nicololuescher/sagdu"><img
     src="https://img.shields.io/github/license/nicololuescher/sagdu"
     alt="License"
@@ -26,3 +27,11 @@ SagDu ist eine innovative App, die Nutzern hilft, ihre Mahlzeiten besser zu plan
 # Dokumentation
 
 [Hier geht's zur Tech Jury Dokumentation](tech-info-jury.md)
+
+# Team Mitglieder (DuckSquad++)
+
+- Nicolo Lüscher (Team Kapitän)
+- David Hänni
+- Adrian Aeschlimann
+- David Kneubühler
+- Sven Gerber
