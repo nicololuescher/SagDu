@@ -14,6 +14,7 @@ import {
   Utensils,
   Warehouse,
   Pencil,
+  Globe,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -94,6 +95,16 @@ export function SiteHeader() {
               >
                 <div className="flex items-center gap-3">
                   <Egg className="h-4 w-4" /> <span>SägDuck</span>
+                </div>
+              </Link>
+            </SheetClose>
+            <SheetClose asChild>
+              <Link
+                href="/community"
+                className="rounded-md px-3 py-3 text-base hover:bg-muted"
+              >
+                <div className="flex items-center gap-3">
+                  <Globe className="h-4 w-4" /> <span>Community</span>
                 </div>
               </Link>
             </SheetClose>
