@@ -26,6 +26,8 @@ import { useMealsStore } from '@/lib/store/meals';
 import { useUserStore } from '@/lib/store/user';
 import React from 'react';
 import { Snacks } from '@/types/enums/ISnacks';
+import { useState } from "react";
+import { createPortal } from "react-dom";
 
 export default function Meals() {
   let previousDay = new Date().getDate();
@@ -50,7 +52,7 @@ export default function Meals() {
         {meals.map((meal: IMeal) => {
           const showSeparator = previousDay !== meal.date.getDate();
           previousDay = meal.date.getDate();
-
+          
           if (showSeparator) {
             return (
               <TableRow key={meal.date.toDateString() + meal.type}>
@@ -63,7 +65,7 @@ export default function Meals() {
               </TableRow>
             );
           }
-
+          
           return (
             <TableRow key={meal.date.toDateString() + meal.type}>
               <TableCell className="font-medium">
@@ -81,8 +83,10 @@ export function DayCard(meal: IMeal) {
   const router = useRouter();
   const removeMeal = useMealsStore((s) => s.removeMeal);
   const { incrementSnack } = useUserStore();
+  const [showDuck, setShowDuck] = useState(false);
 
   return (
+    <div>
     <Card className="grid gap-4">
       <CardHeader>
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -102,7 +106,15 @@ export function DayCard(meal: IMeal) {
       <CardContent className="flex flex-row gap-1.5 text-sm items-center justify-between">
         {meal.name}
         <div className="flex flex-row gap-2 mt-2">
-          <Button variant="destructive" onClick={() => removeMeal(meal.id)}>
+          <Button variant="destructive" onClick={() => {
+            setShowDuck(true);
+            // Hide after animation duration (e.g., 3s)
+
+            setTimeout(() => {
+              removeMeal(meal.id)
+              setShowDuck(false)
+            }, 3000);
+            }}>
             Missed
           </Button>
           <Button
@@ -130,5 +142,48 @@ export function DayCard(meal: IMeal) {
         </div>
       </CardContent>
     </Card>
+      <div className="relative">
+      {showDuck &&
+        createPortal(
+          <div className="fixed bottom-[-200px] left-1/2 transform -translate-x-1/2 z-[9999] animate-duck ">
+            <img src={"/tamagochiSad.svg"}/>
+          </div>,
+          document.body
+        )}
+      
+      <style jsx>{`
+        @keyframes duckPop {
+          0% {
+            bottom: -200px;
+            transform: translateX(-20%) scale(3);
+            opacity: 0;
+          }
+          30% {
+            bottom: 50px;
+            transform: translateX(-10%) scale(3);
+            opacity: 1;
+          }
+          70% {
+            bottom: 50px;
+            transform: translateX(10%) scale(3);
+            opacity: 1;
+          }
+          70.001% {
+            bottom: 50px;
+            transform: translateX(10%) scale(3) scaleX(-1);
+            opacity: 1;
+          }
+          100% {
+            bottom: 0px;
+            transform: translateX(-100%) scale(3) rotate(-25deg) scaleX(-1);
+            opacity: 0;
+          }
+        }
+        .animate-duck {
+          animation: duckPop 3s ease-in-out forwards;
+        }
+      `}</style>
+    </div>
+    </div>
   );
 }

@@ -12,7 +12,7 @@ export default function UserBridge() {
         id: "1",
         name: "Duck Robert",
         email: "duck@example.com",
-        duckHealth: 30,
+        duckHealth: 20,
       });
     }
   });
