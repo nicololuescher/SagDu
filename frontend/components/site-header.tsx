@@ -2,17 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  Menu,
-  Home,
-  Users,
-  Settings,
-  LogIn,
-  LogOut,
-  CircleUser,
-  Utensils,
-  Egg,
-} from 'lucide-react';
+import { Menu, Settings, LogOut, CircleUser, Home, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -26,7 +16,7 @@ import { Separator } from '@/components/ui/separator';
 
 export function SiteHeader() {
   return (
-    <div className="mx-auto flex h-14 w-full max-w-screen-sm items-center justify-between px-3">
+    <div className="mx-auto flex h-full w-full max-w-screen-sm items-center justify-between px-3">
       {/* Drawer (mobile nav) */}
       <Sheet>
         <SheetTrigger asChild>
@@ -37,7 +27,7 @@ export function SiteHeader() {
         <SheetContent side="left" className="w-[85vw] p-0">
           <div className="px-4 pb-3 pt-4">
             <SheetHeader>
-              <SheetTitle className="text-left">Säg du</SheetTitle>
+              <SheetTitle className="text-left">Säg Du</SheetTitle>
             </SheetHeader>
           </div>
           <Separator />
@@ -110,7 +100,7 @@ export function SiteHeader() {
 
       {/* Brand */}
       <Link href="/" className="font-semibold tracking-tight">
-        Säg du
+        Säg Du
       </Link>
 
       {/* Right action */}
