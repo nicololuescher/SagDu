@@ -3,16 +3,14 @@
 ```yaml
 users:
   - id: 1
-    info:
-      name: "John Doe"
-      age: 30
-      location: "New York"
-    preferences:
-      vegan: true
-      vegetarian: true
-      gluten_free: false
-      lactose_free: true
-      soy_free: true
+    name: "John Doe"
+    age: 30
+    location: "New York"
+    vegan: true
+    vegetarian: true
+    gluten_free: false
+    lactose_free: true
+    soy_free: true
     inventory:
       - id: 1
         quantity: 40
@@ -53,10 +51,9 @@ meals:
   - user: 1
     date: 2024-06-01
     type: breakfast
-    info:
-      name: "Oatmeal with Banana"
-      description: "A healthy breakfast option"
-      people: 1
+    name: "Oatmeal with Banana"
+    description: "A healthy breakfast option"
+    people: 1
     ingredients:
       - id: 1
         quantity: 40
@@ -71,10 +68,9 @@ menus:
         quantity: 40
       - id: 2
         quantity: 1
+    cooking_time: 10
     recipe:
-      cooking_time: 10
-      steps:
-        - preparation_time: 5
-          preparation_type: "active"
-          description: "Cook oatmeal with water or milk."
+      - preparation_time: 5
+        preparation_type: "active"
+        description: "Cook oatmeal with water or milk."
 ```

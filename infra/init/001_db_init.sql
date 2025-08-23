@@ -15,13 +15,6 @@ CREATE TABLE IF NOT EXISTS "user" (
   soy_free     BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE IF NOT EXISTS user_inventory (
-  user_id       BIGINT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-  ingredient_id BIGINT NOT NULL REFERENCES ingredient(id) ON DELETE RESTRICT,
-  quantity      NUMERIC(12,3) NOT NULL CHECK (quantity >= 0),
-  PRIMARY KEY (user_id, ingredient_id)
-);
-
 -- Ingredients (unit + nutrition are the source of truth)
 CREATE TABLE IF NOT EXISTS ingredient (
   id         BIGINT PRIMARY KEY,
@@ -47,13 +40,6 @@ CREATE TABLE IF NOT EXISTS menu (
   recipe        JSONB NOT NULL DEFAULT '{}'::jsonb -- {{preparation_time, preparation_type, description}, ...}
 );
 
-CREATE TABLE IF NOT EXISTS menu_ingredient (
-  menu_id       BIGINT NOT NULL REFERENCES menu(id) ON DELETE CASCADE,
-  ingredient_id BIGINT NOT NULL REFERENCES ingredient(id) ON DELETE RESTRICT,
-  quantity      NUMERIC(12,3) NOT NULL CHECK (quantity >= 0),
-  PRIMARY KEY (menu_id, ingredient_id)
-);
-
 -- Meals (instances written by your API)
 CREATE TABLE IF NOT EXISTS meal (
   id            BIGSERIAL PRIMARY KEY,
@@ -64,6 +50,20 @@ CREATE TABLE IF NOT EXISTS meal (
   description   TEXT NOT NULL,
   people        INTEGER NOT NULL CHECK (people > 0),
   menu_id       BIGINT NULL REFERENCES menu(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_ingredient (
+  user_id       BIGINT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+  ingredient_id BIGINT NOT NULL REFERENCES ingredient(id) ON DELETE RESTRICT,
+  quantity      NUMERIC(12,3) NOT NULL CHECK (quantity >= 0),
+  PRIMARY KEY (user_id, ingredient_id)
+);
+
+CREATE TABLE IF NOT EXISTS menu_ingredient (
+  menu_id       BIGINT NOT NULL REFERENCES menu(id) ON DELETE CASCADE,
+  ingredient_id BIGINT NOT NULL REFERENCES ingredient(id) ON DELETE RESTRICT,
+  quantity      NUMERIC(12,3) NOT NULL CHECK (quantity >= 0),
+  PRIMARY KEY (menu_id, ingredient_id)
 );
 
 CREATE TABLE IF NOT EXISTS meal_ingredient (
