@@ -1,26 +1,21 @@
-# Stage 1
-FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN  npm install --production
+# Use official Node.js LTS image
+FROM node:20-alpine
 
-# Stage 2
-FROM node:20-alpine AS builder
+# Set working directory
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the application code
 COPY . .
-RUN NODE_ENV=production npm run build
 
-# Stage 3
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV production
-RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-USER 1001
+# Build the Next.js app
+RUN npm run build
+
+# Expose the port the app runs on (change if needed)
 EXPOSE 3000
-ENV PORT 3000
+
+# Start the application
 CMD ["npm", "start"]
