@@ -1,0 +1,797 @@
+openapi: 3.0.3
+info:
+  title: SagDu API
+  version: 1.0.0
+  description: REST API for users, ingredients, menus and meals.
+
+servers:
+  - url: http://localhost:4000
+    description: Local
+  - url: https://sagdu.nicolo.info/api
+    description: Demo
+
+tags:
+  - name: Health
+  - name: Users
+  - name: Inventory
+  - name: Ingredients
+  - name: Menus
+  - name: Meals
+
+paths:
+  /healthz:
+    get:
+      tags: [Health]
+      summary: Health check (includes DB probe)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, example: true }
+        '500':
+          description: DB not reachable
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /users:
+    get:
+      tags: [Users]
+      summary: List users
+      parameters:
+        - $ref: '#/components/parameters/Limit50'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/User' }
+    post:
+      tags: [Users]
+      summary: Create user (client-supplied id)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserCreate' }
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: URL of the created user
+              schema: { type: string, example: /users/123 }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: integer, example: 123 }
+        '409':
+          description: Conflict or invalid
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /users/{user_id}:
+    get:
+      tags: [Users]
+      summary: Get a user
+      parameters: [ { $ref: '#/components/parameters/UserId' } ]
+      responses:
+        '200':
+          description: User
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '404':
+          description: Not found
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    patch:
+      tags: [Users]
+      summary: Update a user (partial)
+      parameters: [ { $ref: '#/components/parameters/UserId' } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserUpdate' }
+      responses:
+        '204': { description: No content }
+        '404':
+          description: Not found or no changes
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    delete:
+      tags: [Users]
+      summary: Delete a user
+      parameters: [ { $ref: '#/components/parameters/UserId' } ]
+      responses:
+        '204': { description: No content }
+        '404':
+          description: Not found
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /users/{user_id}/inventory:
+    get:
+      tags: [Inventory]
+      summary: Get user inventory (ingredient_id -> quantity)
+      parameters: [ { $ref: '#/components/parameters/UserId' } ]
+      responses:
+        '200':
+          description: Inventory map
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InventoryMap' }
+
+  /users/{user_id}/inventory/{ingredient_id}:
+    put:
+      tags: [Inventory]
+      summary: Upsert an inventory item for a user (<=0 removes)
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/IngredientId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/InventoryUpsert' }
+      responses:
+        '200':
+          description: Upserted with quantity > 0
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ingredient_id: { type: integer }
+                  quantity: { type: number }
+        '204': { description: Item removed (quantity <= 0) }
+        '400':
+          description: Bad request
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /ingredients:
+    get:
+      tags: [Ingredients]
+      summary: List ingredients
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, default: 200, minimum: 0 }
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: List of ingredients
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Ingredient' }
+    post:
+      tags: [Ingredients]
+      summary: Create ingredient (client-supplied id)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/IngredientCreate' }
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: URL of the created ingredient
+              schema: { type: string, example: /ingredients/101 }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: integer, example: 101 }
+        '409':
+          description: Conflict or invalid
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /ingredients/{ingredient_id}:
+    get:
+      tags: [Ingredients]
+      summary: Get an ingredient
+      parameters: [ { $ref: '#/components/parameters/IngredientId' } ]
+      responses:
+        '200':
+          description: Ingredient
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Ingredient' }
+        '404':
+          description: Not found
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    patch:
+      tags: [Ingredients]
+      summary: Update an ingredient (partial)
+      parameters: [ { $ref: '#/components/parameters/IngredientId' } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/IngredientUpdate' }
+      responses:
+        '204': { description: No content }
+        '404':
+          description: Not found or no changes
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    delete:
+      tags: [Ingredients]
+      summary: Delete an ingredient
+      parameters: [ { $ref: '#/components/parameters/IngredientId' } ]
+      responses:
+        '204': { description: No content }
+        '404':
+          description: Not found
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /menus:
+    get:
+      tags: [Menus]
+      summary: List menus
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, default: 100, minimum: 0 }
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: List of menus
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Menu' }
+    post:
+      tags: [Menus]
+      summary: Create menu (server-generated id)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MenuCreate' }
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: URL of the created menu
+              schema: { type: string, example: /menus/42 }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: integer, example: 42 }
+        '409':
+          description: Conflict or invalid
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /menus/{menu_id}:
+    get:
+      tags: [Menus]
+      summary: Get a menu
+      parameters: [ { $ref: '#/components/parameters/MenuId' } ]
+      responses:
+        '200':
+          description: Menu
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Menu' }
+        '404':
+          description: Not found
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    patch:
+      tags: [Menus]
+      summary: Update a menu (partial)
+      parameters: [ { $ref: '#/components/parameters/MenuId' } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MenuUpdate' }
+      responses:
+        '204': { description: No content }
+        '404':
+          description: Not found or no changes
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    delete:
+      tags: [Menus]
+      summary: Delete a menu
+      parameters: [ { $ref: '#/components/parameters/MenuId' } ]
+      responses:
+        '204': { description: No content }
+        '404':
+          description: Not found
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /menus/{menu_id}/ingredients:
+    get:
+      tags: [Menus]
+      summary: Get ingredients for a menu
+      parameters: [ { $ref: '#/components/parameters/MenuId' } ]
+      responses:
+        '200':
+          description: Menu ingredients
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Menu_Ingredient' }
+    put:
+      tags: [Menus]
+      summary: Replace ingredients for a menu
+      parameters: [ { $ref: '#/components/parameters/MenuId' } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MenuIngredientsPayload' }
+      responses:
+        '204': { description: No content }
+        '400':
+          description: Could not set menu ingredients
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /meals:
+    post:
+      tags: [Meals]
+      summary: Create meal (single day)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MealCreate' }
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: URL of the created meal
+              schema: { type: string, example: /meals/77 }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: integer, example: 77 }
+        '409':
+          description: Conflict or invalid
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /meals/{meal_id}:
+    get:
+      tags: [Meals]
+      summary: Get a meal
+      parameters: [ { $ref: '#/components/parameters/MealId' } ]
+      responses:
+        '200':
+          description: Meal
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Meal' }
+        '404':
+          description: Not found
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    patch:
+      tags: [Meals]
+      summary: Update a meal (partial)
+      parameters: [ { $ref: '#/components/parameters/MealId' } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MealUpdate' }
+      responses:
+        '204': { description: No content }
+        '404':
+          description: Not found or no changes
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    delete:
+      tags: [Meals]
+      summary: Delete a meal
+      parameters: [ { $ref: '#/components/parameters/MealId' } ]
+      responses:
+        '204': { description: No content }
+        '404':
+          description: Not found
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /users/{user_id}/meals:
+    get:
+      tags: [Meals]
+      summary: List meals for a user
+      parameters: [ { $ref: '#/components/parameters/UserId' } ]
+      responses:
+        '200':
+          description: Meals for the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Meal' }
+        '404':
+          description: User not found
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /meals/{meal_id}/ingredients:
+    get:
+      tags: [Meals]
+      summary: Get ingredients for a meal
+      parameters: [ { $ref: '#/components/parameters/MealId' } ]
+      responses:
+        '200':
+          description: Meal ingredients
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Meal_Ingredient' }
+    put:
+      tags: [Meals]
+      summary: Replace ingredients for a meal
+      parameters: [ { $ref: '#/components/parameters/MealId' } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MealIngredientsPayload' }
+      responses:
+        '204': { description: No content }
+        '400':
+          description: Could not set meal ingredients
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+components:
+  parameters:
+    Limit50:
+      name: limit
+      in: query
+      schema: { type: integer, default: 50, minimum: 0 }
+    Offset:
+      name: offset
+      in: query
+      schema: { type: integer, default: 0, minimum: 0 }
+    UserId:
+      name: user_id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+    IngredientId:
+      name: ingredient_id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+    MenuId:
+      name: menu_id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+    MealId:
+      name: meal_id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string, example: not_found }
+            message: { type: string, example: User not found }
+
+    # -------- Database entities (responses) --------
+    User:
+      type: object
+      additionalProperties: false
+      required:
+        [ id, name, age, location, vegan, vegetarian, gluten_free, lactose_free, soy_free ]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        age: { type: integer }
+        location: { type: string }
+        vegan: { type: boolean }
+        vegetarian: { type: boolean }
+        gluten_free: { type: boolean }
+        lactose_free: { type: boolean }
+        soy_free: { type: boolean }
+        inventory:
+          $ref: '#/components/schemas/InventoryMap'
+      example:
+        id: 123
+        name: "Alice"
+        age: 30
+        location: "Zurich"
+        vegan: false
+        vegetarian: true
+        gluten_free: false
+        lactose_free: false
+        soy_free: true
+        inventory: { "101": 2.5, "205": 1 }
+
+    Ingredient:
+      type: object
+      additionalProperties: false
+      required:
+        [ id, name, calories, protein, carbs, fat, fiber,
+          vegetarian, vegan, gluten_free, lactose_free, soy_free ]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        calories: { type: number }
+        protein: { type: number }
+        carbs: { type: number }
+        fat: { type: number }
+        fiber: { type: number }
+        vegetarian: { type: boolean }
+        vegan: { type: boolean }
+        gluten_free: { type: boolean }
+        lactose_free: { type: boolean }
+        soy_free: { type: boolean }
+      example:
+        id: 101
+        name: "Tomato"
+        calories: 18
+        protein: 0.9
+        carbs: 3.9
+        fat: 0.2
+        fiber: 1.2
+        vegetarian: true
+        vegan: true
+        gluten_free: true
+        lactose_free: true
+        soy_free: true
+
+    Menu:
+      type: object
+      additionalProperties: false
+      required: [ id, name, description, type, cooking_time, recipe ]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        description: { type: string }
+        type: { type: string }
+        cooking_time: { type: integer, description: "Minutes" }
+        recipe:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      example:
+        id: 42
+        name: "Italian Night"
+        description: "Pasta and salad"
+        type: "dinner"
+        cooking_time: 40
+        recipe:
+          - step: "Boil pasta"
+          - step: "Prepare salad"
+
+    Meal:
+      type: object
+      additionalProperties: false
+      required: [ id, user_id, date, type, name, description, people, menu_id ]
+      properties:
+        id: { type: integer }
+        user_id: { type: integer }
+        date: { type: string, format: date }
+        type: { type: string }
+        name: { type: string }
+        description: { type: string }
+        people: { type: integer, minimum: 1 }
+        menu_id: { type: integer, nullable: true }
+      example:
+        id: 77
+        user_id: 123
+        date: "2025-08-23"
+        type: "dinner"
+        name: "Pasta Night"
+        description: "Pasta + salad"
+        people: 2
+        menu_id: 42
+
+    Menu_Ingredient:
+      type: object
+      additionalProperties: false
+      required: [ menu_id, ingredient_id, quantity ]
+      properties:
+        menu_id: { type: integer }
+        ingredient_id: { type: integer }
+        quantity: { type: number }
+      example: { menu_id: 42, ingredient_id: 101, quantity: 2.0 }
+
+    Meal_Ingredient:
+      type: object
+      additionalProperties: false
+      required: [ meal_id, ingredient_id, quantity ]
+      properties:
+        meal_id: { type: integer }
+        ingredient_id: { type: integer }
+        quantity: { type: number }
+      example: { meal_id: 77, ingredient_id: 101, quantity: 150 }
+
+    # -------- Request bodies --------
+    UserCreate:
+      type: object
+      additionalProperties: false
+      required:
+        [ id, name, age, location, vegan, vegetarian, gluten_free, lactose_free, soy_free ]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        age: { type: integer }
+        location: { type: string }
+        vegan: { type: boolean }
+        vegetarian: { type: boolean }
+        gluten_free: { type: boolean }
+        lactose_free: { type: boolean }
+        soy_free: { type: boolean }
+
+    UserUpdate:
+      type: object
+      additionalProperties: false
+      properties:
+        name: { type: string }
+        age: { type: integer }
+        location: { type: string }
+        vegan: { type: boolean }
+        vegetarian: { type: boolean }
+        gluten_free: { type: boolean }
+        lactose_free: { type: boolean }
+        soy_free: { type: boolean }
+
+    IngredientCreate:
+      type: object
+      additionalProperties: false
+      required:
+        [ id, name, calories, protein, carbs, fat, fiber,
+          vegetarian, vegan, gluten_free, lactose_free, soy_free ]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        calories: { type: number }
+        protein: { type: number }
+        carbs: { type: number }
+        fat: { type: number }
+        fiber: { type: number }
+        vegetarian: { type: boolean }
+        vegan: { type: boolean }
+        gluten_free: { type: boolean }
+        lactose_free: { type: boolean }
+        soy_free: { type: boolean }
+
+    IngredientUpdate:
+      type: object
+      additionalProperties: false
+      properties:
+        name: { type: string }
+        calories: { type: number }
+        protein: { type: number }
+        carbs: { type: number }
+        fat: { type: number }
+        fiber: { type: number }
+        vegetarian: { type: boolean }
+        vegan: { type: boolean }
+        gluten_free: { type: boolean }
+        lactose_free: { type: boolean }
+        soy_free: { type: boolean }
+
+    MenuCreate:
+      type: object
+      additionalProperties: false
+      required: [ name, description, cooking_time, recipe ]
+      properties:
+        name: { type: string }
+        description: { type: string }
+        cooking_time: { type: integer, description: "Minutes" }
+        recipe:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+
+    MenuUpdate:
+      type: object
+      additionalProperties: false
+      properties:
+        name: { type: string }
+        description: { type: string }
+        cooking_time: { type: integer, description: "Minutes" }
+        recipe:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+
+    MealCreate:
+      type: object
+      additionalProperties: false
+      required: [ user_id, date, type, name, description, people ]
+      properties:
+        user_id: { type: integer }
+        date: { type: string, format: date, example: "2025-08-23" }
+        type: { type: string }
+        name: { type: string }
+        description: { type: string }
+        people: { type: integer, minimum: 1 }
+        menu_id: { type: integer, nullable: true }
+
+    MealUpdate:
+      type: object
+      additionalProperties: false
+      properties:
+        user_id: { type: integer }
+        date: { type: string, format: date }
+        type: { type: string }
+        name: { type: string }
+        description: { type: string }
+        people: { type: integer, minimum: 1 }
+        menu_id: { type: integer, nullable: true }
+
+    InventoryUpsert:
+      type: object
+      additionalProperties: false
+      properties:
+        quantity: { type: number }
+      required: [quantity]
+
+    MenuIngredientsPayloadItem:
+      type: object
+      additionalProperties: false
+      required: [ ingredient_id, quantity ]
+      properties:
+        ingredient_id: { type: integer }
+        quantity: { type: number }
+
+    MenuIngredientsPayload:
+      type: object
+      additionalProperties: false
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/MenuIngredientsPayloadItem' }
+
+    MealIngredientsPayloadItem:
+      type: object
+      additionalProperties: false
+      required: [ ingredient_id, quantity ]
+      properties:
+        ingredient_id: { type: integer }
+        quantity: { type: number }
+
+    MealIngredientsPayload:
+      type: object
+      additionalProperties: false
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/MealIngredientsPayloadItem' }
+
+    InventoryMap:
+      type: object
+      description: Map of ingredient_id (string) to quantity
+      additionalProperties:
+        type: number
+      example:
+        "101": 2.5
+        "205": 1
