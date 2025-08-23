@@ -1,13 +1,14 @@
+import os
 from flask import Flask
 from database_adapter import DatabaseAdapter
 
 app = Flask(__name__)
 db_adapter = DatabaseAdapter(
-        host="127.0.0.1",
-        username="postgres",
-        password="postgres",
-        database="sagdu",
-        port=5432
+    host=os.environ.get("DB_HOST", ""),
+    username=os.environ.get("DB_USERNAME", ""),
+    password=os.environ.get("DB_PASSWORD", ""),
+    database=os.environ.get("DB_DATABASE", ""),
+    port=int(os.environ.get("DB_PORT", 5432))
 )
 
 @app.route('/')

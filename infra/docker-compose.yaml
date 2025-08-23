@@ -9,6 +9,11 @@ services:
   api:
     build:
       context: ../api
+    environment:
+      DB_HOST: ${DB_HOST:-postgres}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_DATABASE: ${DB_DATABASE:-sagdu}
     ports:
       - "4000:4000"
     depends_on:
