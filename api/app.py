@@ -1,58 +1,48 @@
 from flask import Flask
+from database_adapter import DatabaseAdapter
 
 app = Flask(__name__)
+db_adapter = DatabaseAdapter(
+        host="127.0.0.1",
+        username="postgres",
+        password="postgres",
+        database="sagdu",
+        port=5432
+)
 
 @app.route('/')
 def index():
     return "root"
 
-@app.get('/user')
-def user():
-    return "user"
+# TODO: Add endpoints for creating, updating, and deleting users, ingredients, meals, and menus.
 
-@app.post('/user')
-def create_user():
-    return "create user"
+@app.get('/user/<int:user_id>')
+def get_user(user_id: int):
+    user = db_adapter.get_user(user_id)
+    if user:
+        return user
+    return {"error": "User not found"}, 404
 
-@app.put('/user')
-def update_user():
-    return "update user"
+@app.get('/ingredient/<int:ingredient_id>')
+def get_ingredient(ingredient_id: int):
+    ingredient = db_adapter.get_ingredient(ingredient_id)
+    if ingredient:
+        return ingredient
+    return {"error": "Ingredient not found"}, 404
 
-@app.get('/ingredient')
-def ingredient():
-    return "ingredient"
+@app.get('/meal/<int:meal_id>')
+def get_meal(meal_id: int):
+    meal = db_adapter.get_meal(meal_id)
+    if meal:
+        return meal
+    return {"error": "Meal not found"}, 404
 
-@app.post('/ingredient')
-def create_ingredient():
-    return "create ingredient"
-
-@app.put('/ingredient')
-def update_ingredient():
-    return "update ingredient"
-
-@app.get('/meal')
-def meal():
-    return "meal"
-
-@app.post('/meal')
-def create_meal():
-    return "create meal"
-
-@app.get('/menu')
-def menu():
-    return "menu"
-
-@app.post('/menu')
-def create_menu():
-    return "create menu"
-
-@app.put('/menu')
-def update_menu():
-    return "update menu"
-
-@app.get('/shopping_list')
-def shopping_list():
-    return "shopping list test"
+@app.get('/menu/<int:menu_id>')
+def get_menu(menu_id: int):
+    menu = db_adapter.get_menu(menu_id)
+    if menu:
+        return menu
+    return {"error": "Menu not found"}, 404
 
 if __name__ == '__main__':
     app.run(debug=True)

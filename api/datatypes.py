@@ -3,6 +3,7 @@ from datetime import date
 
 class User(TypedDict):
     id: int
+    info: Dict[str, Any]
     preferences: Dict[str, Any]
     inventory: Dict[int, float]
     
@@ -10,19 +11,18 @@ class Ingredient(TypedDict):
     id: int
     name: str
     unit: str
-    nutritional_info: Dict[str, float]
+    nutrition: Dict[str, float]
 
 class Meal(TypedDict):
     id: int
-    user: int
+    user_id: int
     date: date
-    description: str
-    servings: float
-    ingredients: Dict[int, float]
+    type: str
+    info: Dict[str, Any]
+    source_menu_id: int | None
 
 class Menu(TypedDict):
     id: int
     name: str
     description: str
-    ingredients: Dict[int, float]
-    recipe: Dict[str, str]
+    recipe: Dict[str, Any]

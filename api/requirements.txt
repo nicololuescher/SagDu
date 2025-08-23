@@ -1,2 +1,2 @@
 flask
-pg8000
+psycopg2
