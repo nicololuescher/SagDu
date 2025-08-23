@@ -13,14 +13,25 @@ import {
     SelectValue,
 } from "@/components/ui/selectCookie"
 import { motion, useAnimation } from "framer-motion";
+import { Progress } from "@/components/ui/progress"
 
 export default function Tamagochi() {
     const [displayState, setDisplayState] = useState({ x: 100, y: 400, lookRight: false, eating: false });
     const [selectedAction, setSelectedAction] = useState<string>("cookie");
+    const [currentHP, setCurrentHP] = useState<number>(42);
     const cardRef = useRef<HTMLDivElement>(null);
 
     const [spawnedItems, setSpawnedItems] = useState<{ id: number; x: number; y: number; dx: number; dy: number; type: string }[]>([]);
     const nextId = useRef(0);
+
+    const [items, setItems] = useState([
+        { id: "cookie", amount: 8 },
+        { id: "apple", amount: 4 },
+        { id: "banana", amount: 3 },
+        { id: "drumstick", amount: 7 },
+        { id: "cup-soda", amount: 5 },
+    ])
+
 
     //Move SagDuck in random directions
     useEffect(() => {
@@ -45,6 +56,8 @@ export default function Tamagochi() {
     //Spawn a cookie on the clicked position
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!cardRef.current) return;
+
+        if (!canUseSnack(selectedAction)) return;
 
         //Set eating flag temporarily to true to swap out SagDuck with its eating SVG
         setDisplayState(prev => {
@@ -84,6 +97,29 @@ export default function Tamagochi() {
                 })),
             ]
         );
+
+        useSnack(selectedAction,)
+    }
+
+    const useSnack = (id: string) => {
+        setCurrentHP((prevHP) => {
+            console.log(Math.min(prevHP + 10, 100))
+            return Math.min(prevHP + 10, 100)
+        })
+
+        setItems((prev) =>
+            prev.map((item) => {
+                let newAmount = item.amount - 1
+
+                return item.id === id ? { ...item, amount: newAmount } : item
+            }
+            )
+        )
+    }
+
+    const canUseSnack = (id: string): boolean => {
+        const item = items.find((item) => item.id === id);
+        return item !== undefined && item.amount > 0;
     }
 
     //Cleanup spawned objects that were created on click
@@ -122,17 +158,21 @@ export default function Tamagochi() {
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectLabel>Snacks</SelectLabel>
-                                    <SelectItem value="cookie"><ItemSVG itemValue="cookie"></ItemSVG></SelectItem>
-                                    <SelectItem value="apple"><ItemSVG itemValue="apple"></ItemSVG></SelectItem>
-                                    <SelectItem value="banana"><ItemSVG itemValue="banana"></ItemSVG></SelectItem>
-                                    <SelectItem value="drumstick"><ItemSVG itemValue="drumstick"></ItemSVG></SelectItem>
-                                    <SelectItem value="cup-soda"><ItemSVG itemValue="cup-soda"></ItemSVG></SelectItem>
+                                    {items.map((item) => (
+                                        <SelectItem key={item.id} value={item.id}>
+                                            <ItemSVG itemValue={item.id}></ItemSVG>{item.amount}x
+                                        </SelectItem>
+                                    ))}
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
                     </div>
                 </CardAction>
             </Card>
+            <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">{currentHP}%</span>
+                <Progress value={currentHP} className="bg-gray-200 [&>div]:bg-green-500" />
+            </div>
         </div>
     )
 }
