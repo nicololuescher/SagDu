@@ -40,7 +40,7 @@ const mockDays: Day[] = [
 ]
 
 export default function Meals() {
-  let previousDay = new Date();
+  let previousDay = mockDays[0].date.getDate();
 
   return (
     <Table className="caption-top">
@@ -53,13 +53,28 @@ export default function Meals() {
       </TableHeader>
       <TableBody>
         {mockDays.map((day: Day) => {
-          const showSeparator = previousDay !== day.date;
-          previousDay = day.date;
+          const showSeparator = previousDay !== day.date.getDate();
+          previousDay = day.date.getDate();
+
+          if (showSeparator) {
+            return (
+              <TableRow>
+                <TableCell className="font-medium">
+                <hr className="my-4 border-gray-300" />
+                <DayCard {...day}></DayCard>
+                </TableCell>
+              </TableRow>
+            );
+          }
 
           //I want to show a verticle line but that breaks things because its inside a table
           return (
-            <TableRowDay {...day}></TableRowDay>
-          );
+            <TableRow>
+
+              <TableCell className="font-medium">
+                <DayCard {...day}></DayCard>
+              </TableCell>
+            </TableRow>);
 
         })}
       </TableBody>
@@ -67,32 +82,28 @@ export default function Meals() {
   );
 }
 
-export function TableRowDay(day: Day) {
+export function DayCard(day: Day) {
   return (
-    <TableRow>
-      <TableCell className="font-medium">
-        <Card className="grid gap-4">
-          <CardHeader>
-            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-              <div className="flex items-center gap-2">
-                <MealIcon type={day.type}></MealIcon>
-                {day.date.toLocaleDateString("en-US", { weekday: "long" })}
-              </div>
-            </CardTitle>
-            <CardDescription>{day.date.toDateString()}</CardDescription>
-            <CardAction>
-              <Link href="/mealDetails"> {/* Need to also pass the current meal */}
-                <Eye>
-                </Eye>
-              </Link>
-            </CardAction>
-          </CardHeader>
-          <CardContent className="flex-col items-start gap-1.5 text-sm">
-            <p>{day.meal}</p>
-          </CardContent>
-        </Card>
-      </TableCell>
-    </TableRow>
+    <Card className="grid gap-4">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+          <div className="flex items-center gap-2">
+            <MealIcon type={day.type}></MealIcon>
+            {day.date.toLocaleDateString("en-US", { weekday: "long" })}
+          </div>
+        </CardTitle>
+        <CardDescription>{day.date.toDateString()}</CardDescription>
+        <CardAction>
+          <Link href="/mealDetails"> {/* Need to also pass the current meal */}
+            <Eye>
+            </Eye>
+          </Link>
+        </CardAction>
+      </CardHeader>
+      <CardContent className="flex-col items-start gap-1.5 text-sm">
+        <p>{day.meal}</p>
+      </CardContent>
+    </Card>
   )
 }
 
