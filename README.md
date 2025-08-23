@@ -1,1 +1,38 @@
-# SagDu
+# SagDu - Clever planen, bewusster essen
+
+<p align="center">
+  <img height="130px" src="assets/logo.png" />
+</p>
+
+<p align="center">
+  <strong>
+    <a href="https://tbd/">TBD</a>
+    <br />
+    Plane deine Mahlzeiten wie nie zuvor
+  </strong>
+</p>
+
+<p align="center">
+  <img alt="Version" src="https://img.shields.io/github/v/tag/nicololuescher/sagdu" />
+  <a href="https://github.com/nicololuescher/sagdu"><img
+    src="https://img.shields.io/github/license/nicololuescher/sagdu"
+    alt="License"
+  /></a>
+  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/nicololuescher/sagdu/docker-release.yml?label=Docker%20Release" />
+</p>
+
+SagDu ist eine innovative App, die Nutzern hilft, ihre Mahlzeiten besser zu planen und bewusster zu essen. Durch die Berücksichtigung individueller Ernährungsbedürfnisse und -vorlieben fördert SagDu eine gesunde und nachhaltige Ernährung.
+
+## Informationen für technische Jury
+
+### Aktueller Stand
+
+### Ausgangslage
+
+### Technischer Aufbau
+
+### Implementation
+
+### Abgrenzung
+
+
