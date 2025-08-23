@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Table,
@@ -6,7 +6,7 @@ import {
   TableCaption,
   TableCell,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   Card,
   CardAction,
@@ -14,16 +14,18 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Cookie, Eye, Plus } from 'lucide-react';
-import Link from 'next/link';
-import { MealIcon } from '@/components/ui/mealicon';
-import { Button } from '@/components/ui/button';
-import IMeal from '@/types/interfaces/IMeal';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { useMealsStore } from '@/lib/store/meals';
-import React from 'react';
+} from "@/components/ui/card";
+import { Cookie, Eye, Plus } from "lucide-react";
+import Link from "next/link";
+import { MealIcon } from "@/components/ui/mealicon";
+import { Button } from "@/components/ui/button";
+import IMeal from "@/types/interfaces/IMeal";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useMealsStore } from "@/lib/store/meals";
+import { useUserStore } from "@/lib/store/user";
+import React from "react";
+import { Snacks } from "@/types/enums/ISnacks";
 
 export default function Meals() {
   let previousDay = new Date().getDate();
@@ -78,6 +80,7 @@ export default function Meals() {
 export function DayCard(meal: IMeal) {
   const router = useRouter();
   const removeMeal = useMealsStore((s) => s.removeMeal);
+  const { user, incrementSnack } = useUserStore();
 
   return (
     <Card className="grid gap-4">
@@ -104,8 +107,9 @@ export function DayCard(meal: IMeal) {
           </Button>
           <Button
             variant="outline"
-            onClick={() =>
-              toast('You Received:', {
+            onClick={() => {
+              incrementSnack(Snacks.COOKIE, 5);
+              toast("You Received:", {
                 description: (
                   <span className="flex flex-row gap-1 text-orange-500">
                     5
@@ -114,11 +118,12 @@ export function DayCard(meal: IMeal) {
                   </span>
                 ),
                 action: {
-                  label: 'Feed',
-                  onClick: () => router.push('/tamagochi'),
+                  label: "Feed",
+                  onClick: () => router.push("/tamagochi"),
                 },
-              })
-            }
+              });
+              removeMeal(meal.id);
+            }}
           >
             Eat
           </Button>
