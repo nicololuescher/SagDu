@@ -166,7 +166,7 @@ export default function CreateMealsPage() {
                   key={mealType}
                   style={{
                     // Split remaining height evenly between 3 rows
-                    height: 'calc((h-full - 100px / 3)',
+                    height: 'calc((100% - 100px) / 3)',
                   }}
                 >
                   <TableCell className="sticky left-0 z-10 bg-background font-medium capitalize shadow-[2px_0_0_0_hsl(var(--border))]">
@@ -180,9 +180,9 @@ export default function CreateMealsPage() {
                     const servings = meal?.servings ?? 1;
 
                     return (
-                      <TableCell key={k} className="p-2">
-                        <div className="flex h-full">
-                          <div className="flex h-full w-full flex-col rounded-lg border bg-muted/20 p-3">
+                      <TableCell key={k} className="p-2 overflow-hidden">
+                        <div className="flex h-full min-w-0">
+                          <div className="flex h-full w-full min-w-0 flex-col rounded-lg border bg-muted/20 p-3">
                             {/* header: checkbox + cog */}
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
@@ -202,11 +202,6 @@ export default function CreateMealsPage() {
                                 </span>
                               </div>
 
-                              {/*                               <Link
-                                href={`/meals/${c.key}/${mealType}`}
-                                className="inline-flex rounded p-2 hover:bg-muted"
-                                aria-label={`Edit ${mealType} details for ${c.a11y}`}
-                              > */}
                               <Settings
                                 className="h-5 w-5"
                                 onClick={() => setDrawerOpen(meal?.id || '')}
@@ -214,14 +209,18 @@ export default function CreateMealsPage() {
                             </div>
 
                             {/* content */}
-                            <Link href="/mealDetails">
-                              <div className="mt-2 grid gap-2">
+                            <Link href="/mealDetails" className="block min-w-0">
+                              <div className="mt-2 grid gap-2 min-w-0">
                                 <div className="h-2 w-full overflow-hidden rounded bg-muted">
                                   <div className="h-2 w-0 bg-foreground/30" />
                                 </div>
 
-                                <div className="flex h-6 items-center text-sm">
-                                  <span className="truncate">
+                                <div className="flex h-6 items-center text-sm min-w-0">
+                                  {/* meal name: single-line ellipsis */}
+                                  <span
+                                    className="block min-w-0 truncate"
+                                    title={meal?.name ?? '—'}
+                                  >
                                     {meal?.name ?? '—'}
                                   </span>
                                 </div>

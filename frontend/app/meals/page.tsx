@@ -40,42 +40,51 @@ export default function Meals() {
   );
 
   return (
-    <Table className="caption-top">
-      <TableCaption className="flex items-center justify-between">
-        <span></span>
-        <span>Upcoming meals</span>
-        <Link href="/create-mealplan">
-          <Plus />
-        </Link>
-      </TableCaption>
-      <TableBody>
-        {meals.map((meal: IMeal) => {
-          const showSeparator = previousDay !== meal.date.getDate();
-          previousDay = meal.date.getDate();
-          
-          if (showSeparator) {
+    <div className="w-full max-w-full overflow-x-hidden">
+      <Table className="caption-top table-fixed w-full">
+        <TableCaption className="flex items-center justify-between w-full min-w-0">
+          <span className="shrink-0" />
+          <span className="mx-2 flex-1 min-w-0 truncate text-center">
+            Upcoming meals
+          </span>
+          <Link
+            href="/create-mealplan"
+            aria-label="Create meal plan"
+            className="shrink-0"
+          >
+            <Plus />
+          </Link>
+        </TableCaption>
+
+        <TableBody>
+          {meals.map((meal: IMeal) => {
+            const showSeparator = previousDay !== meal.date.getDate();
+            previousDay = meal.date.getDate();
+
+            if (showSeparator) {
+              return (
+                <TableRow key={meal.date.toDateString() + meal.type}>
+                  <TableCell className="w-full align-top">
+                    <div className="py-3 text-center text-sm font-semibold text-gray-500">
+                      {meal.date.toDateString()}
+                    </div>
+                    <DayCard {...meal} />
+                  </TableCell>
+                </TableRow>
+              );
+            }
+
             return (
               <TableRow key={meal.date.toDateString() + meal.type}>
-                <TableCell>
-                  <div className="py-3 text-center text-sm font-semibold text-gray-500">
-                    {meal.date.toDateString()}
-                  </div>
-                  <DayCard {...meal}></DayCard>
+                <TableCell className="w-full align-top">
+                  <DayCard {...meal} />
                 </TableCell>
               </TableRow>
             );
-          }
-          
-          return (
-            <TableRow key={meal.date.toDateString() + meal.type}>
-              <TableCell className="font-medium">
-                <DayCard {...meal}></DayCard>
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+          })}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
 
@@ -86,35 +95,43 @@ export function DayCard(meal: IMeal) {
   const [showDuck, setShowDuck] = useState(false);
 
   return (
-    <div>
-    <Card className="grid gap-4">
-      <CardHeader>
-        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-          <div className="flex items-center gap-2">
-            <MealIcon type={meal.type}></MealIcon>
-            {meal.type}
+    <Card className="grid gap-4 w-full min-w-0 overflow-hidden">
+      <CardHeader className="min-w-0">
+        {/* Header row: icon + title/desc on the left, action on the right */}
+        <div className="flex items-start gap-2 min-w-0">
+          <div className="shrink-0 mt-1">
+            <MealIcon type={meal.type} />
           </div>
-        </CardTitle>
-        <CardDescription>{meal.date.toDateString()}</CardDescription>
-        <CardAction>
-          <Link href={`/mealDetails/${encodeURIComponent(meal.id)}`}>
-            {/* Need to also pass the current meal */}
-            <Eye />
-          </Link>
-        </CardAction>
-      </CardHeader>
-      <CardContent className="flex flex-row gap-1.5 text-sm items-center justify-between">
-        {meal.name}
-        <div className="flex flex-row gap-2 mt-2">
-          <Button variant="destructive" onClick={() => {
-            setShowDuck(true);
-            // Hide after animation duration (e.g., 3s)
 
-            setTimeout(() => {
-              removeMeal(meal.id)
-              setShowDuck(false)
-            }, 3000);
-            }}>
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl truncate">
+              {/* Single-line ellipsis for the name; allow breaking long tokens */}
+              <span className="block min-w-0 truncate break-words">
+                {meal.name}
+              </span>
+            </CardTitle>
+            <CardDescription className="min-w-0 overflow-hidden text-ellipsis">
+              {meal.date.toDateString()}
+            </CardDescription>
+          </div>
+
+          <CardAction className="shrink-0 ml-2">
+            <Link href={`/mealDetails/${encodeURIComponent(meal.id)}`}>
+              <Eye />
+            </Link>
+          </CardAction>
+        </div>
+      </CardHeader>
+
+      <CardContent className="flex flex-row gap-2 text-sm items-start min-w-0">
+        {/* Description: single-line ellipsis to avoid horizontal scroll */}
+        <p className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap break-words">
+          {meal.description}
+        </p>
+
+        {/* Buttons shouldn't shrink and cause overflow */}
+        <div className="flex flex-row gap-2 mt-2 shrink-0">
+          <Button variant="destructive" onClick={() => removeMeal(meal.id)}>
             Missed
           </Button>
           <Button
