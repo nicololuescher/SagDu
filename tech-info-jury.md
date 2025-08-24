@@ -1,24 +1,10 @@
 # Informationen für technische Jury
 
-## Aktueller Stand
-> •	Link zu Github Repository
-
-
-
 ## Ausgangslage
-> •	Worauf habt ihr euch fokussiert?
-> •	Welche technischen Grundsatzentscheide habt ihr gefällt?
 
-
-Fokusgebiete für die technische Umsetzung:
-- Saubere Aufteilung zwischen Frontend und Backend
-- Verwendung von RESTful APIs zur Kommunikation
-- Strict Typisierung in der Programmiersprache für bessere Wartbarkeit
-- Einsatz von Containerisierung (z.B. Docker) für eine konsistente Deployment-Umgebung
+Die Anwendung "SagDu" soll es Nutzern ermöglichen, ihre Mahlzeiten zu planen und dabei individuelle Ernährungsbedürfnisse zu berücksichtigen. Die Idee ist, eine Plattform zu schaffen, die gesunde und abwechslungsreiche Ernährung fördert, ohne dabei auf persönliche Vorlieben und Einschränkungen zu verzichten.
 
 ## Technischer Aufbau
-> •	Welche Komponenten und Frameworks habt ihr verwendet?
-> •	Wozu und wie werden diese eingesetzt?
 
 ![Architektur Übersicht](assets/architecture-overview.png)
 
@@ -52,12 +38,14 @@ Mit einem Docker Compose File [./infra/docker-compose.yaml](./infra/docker-compo
 > Eine Demo Version unserer Applikation wurde deployed in Azure auf einer Linux-VM mit Docker Compose und diese ist verschlüsselt erreichbar unter: [https://sagdu.nicolo.info/](https://sagdu.nicolo.info/meals)
 
 ## Implementation
-> •	Gibt es etwas Spezielles, was ihr zur Implementation erwähnen wollt?
-> •	Was ist aus technischer Sicht besonders cool an eurer Lösung?
 
+Fokusgebiete für die technische Umsetzung:
+- Saubere Aufteilung zwischen Frontend und Backend
+- Verwendung von REST APIs zur Kommunikation
+- Strict Typisierung in der Programmiersprache für bessere Wartbarkeit
+- Einsatz von Containerisierung (z.B. Docker) für eine konsistente Deployment-Umgebung
 
 ## Abgrenzung
->•	Welche Abgrenzungen habt ihr bewusst vorgenommen und damit nicht implementiert? Weshalb?
 
 Wir haben bewusst einige Features nicht implementiert:
 - Kein komplexes Rollen-/Rechtemanagement: Für den Scope des Projekts war ein einfaches User-Handling ausreichend.
