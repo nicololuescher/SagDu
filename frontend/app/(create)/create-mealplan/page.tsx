@@ -162,7 +162,8 @@ export default function CreateMealsPage() {
             {/* Rows */}
             <TableBody>
               {MEALS.map((mealType) => (
-                <TableRow className="hover:shadow-md hover:bg-muted/30 transition-all duration-150"
+                <TableRow
+                  className="hover:shadow-md hover:bg-muted/30 transition-all duration-150"
                   key={mealType}
                   style={{
                     // Split remaining height evenly between 3 rows
@@ -209,7 +210,10 @@ export default function CreateMealsPage() {
                             </div>
 
                             {/* content */}
-                            <Link href="/mealDetails" className="block min-w-0">
+                            <Link
+                              href={`/mealDetails/${meal?.id}`}
+                              className="block min-w-0"
+                            >
                               <div className="mt-2 grid gap-2 min-w-0">
                                 <div className="h-2 w-full overflow-hidden rounded bg-muted">
                                   <div className="h-2 w-0 bg-foreground/30" />
