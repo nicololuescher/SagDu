@@ -50,7 +50,7 @@ export default function LoginPage() {
       setUser({id: guid().toString(), name: email, email: email, duckHealth: 42})
 
       // success – redirect wherever makes sense in your app
-      router.replace('/dashboard');
+      router.replace('/meals');
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message || 'Something went wrong');
