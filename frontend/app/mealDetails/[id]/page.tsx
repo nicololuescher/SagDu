@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Card,
@@ -7,17 +7,17 @@ import {
   CardFooter,
   CardAction,
   CardContent,
-} from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+} from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
-import { MealIcon } from '@/components/ui/mealicon';
-import { useParams, useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import { useMealsStore } from '@/lib/store/meals';
-import React from 'react';
-import IMeal from '@/types/interfaces/IMeal';
-import Image from 'next/image';
+import { MealIcon } from "@/components/ui/mealicon";
+import { useParams, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useMealsStore } from "@/lib/store/meals";
+import React from "react";
+import IMeal from "@/types/interfaces/IMeal";
+import Image from "next/image";
 
 //This is just for testing purposes. Needs to be either gotten from API or passed in when this view is called
 
@@ -54,15 +54,17 @@ export default function MealDetails() {
             </CardAction>
           </CardHeader>
           <CardContent>
-            <Image
-              src="/images/ChickenStyrFry.jpg"
-              width={0}
-              height={0}
-              sizes="100vw"
-              style={{ width: '100%', height: 'auto' }} // optional
-              alt="Picture of prepared meal"
-              className="rounded-md"
-            />
+            <div className="h-48 overflow-hidden rounded-2xl">
+              <Image
+                src={meal.imageSrc}
+                width={300}
+                height={200}
+                sizes="100vw"
+                style={{ width: "100%", height: "auto" }} // optional
+                alt="Picture of prepared meal"
+                className="rounded-md w-full h-full object-cover"
+              />
+            </div>
           </CardContent>
           <CardFooter className="flex-col items-start gap-1.5 text-sm">
             {meal.description}
@@ -72,7 +74,7 @@ export default function MealDetails() {
           <IngredientsList meal={meal} />
         </Card>
         <Card>
-          <RecipeSteps></RecipeSteps>
+          <p className="p-4">{meal.recipe}</p>{" "}
         </Card>
       </div>
     </>
@@ -95,14 +97,5 @@ export function IngredientsList({ meal }: { meal: IMeal }) {
         ))}
       </TableBody>
     </Table>
-  );
-}
-
-export function RecipeSteps() {
-  return (
-    <p className="p-4">
-      This is some recipe text. It should also support multiline. Now go watch
-      some Family Guy Funny Moments on Youtube.
-    </p>
   );
 }

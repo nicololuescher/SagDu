@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useMealsStore } from '@/lib/store/meals';
-import IMeal from '@/types/interfaces/IMeal';
-import { MealType } from '@/types/enums/mealType';
-import { IngredientUnit } from '@/types/enums/ingredientUnit';
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMealsStore } from "@/lib/store/meals";
+import IMeal from "@/types/interfaces/IMeal";
+import { MealType } from "@/types/enums/mealType";
+import { IngredientUnit } from "@/types/enums/ingredientUnit";
 
 type ApiIngredient = {
   ingredient: {
@@ -24,9 +24,9 @@ type ApiMeal = {
   id: number;
   name: string;
   description: string;
-  date: string;       // "Sun, 24 Aug 2025 00:00:00 GMT"
-  type: string;       // "breakfast" | "lunch" | "dinner"
-  people: number;     // -> servings
+  date: string; // "Sun, 24 Aug 2025 00:00:00 GMT"
+  type: string; // "breakfast" | "lunch" | "dinner"
+  people: number; // -> servings
   ingredients: ApiIngredient[];
   // menu_id, user_id ignored
 };
@@ -39,10 +39,14 @@ function toLocalMidnight(d: Date) {
 
 function toMealType(t: string): MealType {
   switch (t?.toLowerCase()) {
-    case 'breakfast': return MealType.Breakfast;
-    case 'lunch':     return MealType.Lunch;
-    case 'dinner':    return MealType.Dinner;
-    default:          return MealType.Lunch; // sane fallback
+    case "breakfast":
+      return MealType.Breakfast;
+    case "lunch":
+      return MealType.Lunch;
+    case "dinner":
+      return MealType.Dinner;
+    default:
+      return MealType.Lunch; // sane fallback
   }
 }
 
@@ -51,9 +55,9 @@ function sumMacros(ings: ApiIngredient[]) {
     (acc, it) => {
       const factor = (it.quantity ?? 0) / 100; // API nutrients look per 100g
       acc.calories += (it.ingredient.calories ?? 0) * factor;
-      acc.protein  += (it.ingredient.protein  ?? 0) * factor;
-      acc.carbs    += (it.ingredient.carbs    ?? 0) * factor;
-      acc.fat      += (it.ingredient.fat      ?? 0) * factor;
+      acc.protein += (it.ingredient.protein ?? 0) * factor;
+      acc.carbs += (it.ingredient.carbs ?? 0) * factor;
+      acc.fat += (it.ingredient.fat ?? 0) * factor;
       return acc;
     },
     { calories: 0, protein: 0, carbs: 0, fat: 0 }
@@ -61,14 +65,16 @@ function sumMacros(ings: ApiIngredient[]) {
 }
 
 async function fetchMeals(): Promise<IMeal[]> {
-  const r = await fetch('/api/users/1/meals', {
-    cache: 'no-store',
-    credentials: 'same-origin',
-    headers: { Accept: 'application/json' },
+  const r = await fetch("/api/users/1/meals", {
+    cache: "no-store",
+    credentials: "same-origin",
+    headers: { Accept: "application/json" },
   });
   if (!r.ok) {
-    const text = await r.text().catch(() => '');
-    throw new Error(`Failed to load meals: ${r.status} ${r.statusText} ${text}`);
+    const text = await r.text().catch(() => "");
+    throw new Error(
+      `Failed to load meals: ${r.status} ${r.statusText} ${text}`
+    );
   }
 
   const raw = (await r.json()) as unknown;
@@ -82,10 +88,12 @@ async function fetchMeals(): Promise<IMeal[]> {
       id: String(m.id),
       name: m.name,
       description: m.description,
+      recipe: "Sample recipe",
       date,
       type: toMealType(m.type),
       servings: m.people ?? 1,
       selected: false, // or derive however your UI expects
+      imageSrc: "/images/ChickenStyrFry.jpg",
       ingredients: m.ingredients.map((it) => ({
         quantity: it.quantity,
         ingredient: {
@@ -105,17 +113,20 @@ const baseDate = new Date(); // today
 // Test data
 export const testMeals: IMeal[] = [
   {
-    id: '1',
+    id: "1",
     name: `Greek Yogurt Parfait`,
     date: new Date(baseDate),
+    recipe:
+      "In a glass or bowl, layer half of the Greek yogurt at the bottom. Add a spoonful of berries, then sprinkle with granola and a drizzle of honey. Repeat the layers until all ingredients are used. Top with almonds for extra crunch. Serve chilled.",
     description:
-      'Creamy yogurt layered with berries, a crunch of granola, and a drizzle of honey.',
+      "Creamy yogurt layered with berries, a crunch of granola, and a drizzle of honey.",
     type: MealType.Breakfast,
+    imageSrc: "/images/GreekYoghurtParfait.jpg",
     ingredients: [
       {
-        quantity: 1,
+        quantity: 150,
         ingredient: {
-          name: 'Greek Yogurt',
+          name: "Greek Yogurt",
           unit: IngredientUnit.Grams,
           calories: 100,
           protein: 17,
@@ -124,9 +135,9 @@ export const testMeals: IMeal[] = [
         },
       },
       {
-        quantity: 1,
+        quantity: 75,
         ingredient: {
-          name: 'Mixed Berries',
+          name: "Mixed Berries",
           unit: IngredientUnit.Grams,
           calories: 60,
           protein: 1,
@@ -135,9 +146,9 @@ export const testMeals: IMeal[] = [
         },
       },
       {
-        quantity: 1,
+        quantity: 40,
         ingredient: {
-          name: 'Granola',
+          name: "Granola",
           unit: IngredientUnit.Grams,
           calories: 200,
           protein: 4,
@@ -146,9 +157,9 @@ export const testMeals: IMeal[] = [
         },
       },
       {
-        quantity: 1,
+        quantity: 10,
         ingredient: {
-          name: 'Honey',
+          name: "Honey",
           unit: IngredientUnit.Grams,
           calories: 60,
           protein: 0,
@@ -157,9 +168,9 @@ export const testMeals: IMeal[] = [
         },
       },
       {
-        quantity: 1,
+        quantity: 15,
         ingredient: {
-          name: 'Almonds',
+          name: "Almonds",
           unit: IngredientUnit.Grams,
           calories: 170,
           protein: 6,
@@ -173,17 +184,19 @@ export const testMeals: IMeal[] = [
     macros: { calories: 420, protein: 25, carbs: 55, fat: 9 },
   },
   {
-    id: '2',
+    id: "2",
     name: `Chicken Caesar Wrap`,
     date: new Date(baseDate),
+    recipe: "Sample recipe",
     description:
-      'Grilled chicken tossed with light Caesar, crisp romaine, and parmesan in a soft tortilla.',
+      "Grilled chicken tossed with light Caesar, crisp romaine, and parmesan in a soft tortilla.",
     type: MealType.Lunch,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Grilled Chicken Breast',
+          name: "Grilled Chicken Breast",
           unit: IngredientUnit.Grams,
           calories: 220,
           protein: 40,
@@ -194,7 +207,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Whole-Wheat Tortilla',
+          name: "Whole-Wheat Tortilla",
           unit: IngredientUnit.Grams,
           calories: 170,
           protein: 6,
@@ -205,7 +218,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Romaine Lettuce',
+          name: "Romaine Lettuce",
           unit: IngredientUnit.Grams,
           calories: 10,
           protein: 1,
@@ -216,7 +229,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Parmesan',
+          name: "Parmesan",
           unit: IngredientUnit.Grams,
           calories: 80,
           protein: 7,
@@ -227,7 +240,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Light Caesar Dressing',
+          name: "Light Caesar Dressing",
           unit: IngredientUnit.Grams,
           calories: 80,
           protein: 1,
@@ -241,17 +254,31 @@ export const testMeals: IMeal[] = [
     macros: { calories: 540, protein: 38, carbs: 36, fat: 20 },
   },
   {
-    id: '3',
+    id: "3",
     name: `Stir Fry`,
     date: new Date(baseDate),
+    recipe:
+      "Cook rice according to package instructions and set aside. Heat olive oil in a large pan or wok over medium-high heat. Add chicken breast slices and cook until golden brown. Add bell peppers and broccoli, stir-frying until vegetables are tender-crisp. Stir in lemon juice for brightness. Serve the stir-fry over rice and enjoy hot.",
     description:
-      'Chicken stir-fry with tofu in a savory sauce over brown rice.',
+      "Chicken stir-fry with tofu in a savory sauce over brown rice.",
     type: MealType.Dinner,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
-        quantity: 200,
+        quantity: 150,
         ingredient: {
-          name: 'Chicken breast',
+          name: "Chicken breast",
+          unit: IngredientUnit.Grams,
+          calories: 300,
+          protein: 34,
+          carbs: 0,
+          fat: 18,
+        },
+      },
+      {
+        quantity: 150,
+        ingredient: {
+          name: "Rice",
           unit: IngredientUnit.Grams,
           calories: 300,
           protein: 34,
@@ -262,18 +289,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Rice',
-          unit: IngredientUnit.Grams,
-          calories: 300,
-          protein: 34,
-          carbs: 0,
-          fat: 18,
-        },
-      },
-      {
-        quantity: 1,
-        ingredient: {
-          name: 'Bell Peppers',
+          name: "Bell Peppers",
           unit: IngredientUnit.Pieces,
           calories: 220,
           protein: 8,
@@ -282,9 +298,9 @@ export const testMeals: IMeal[] = [
         },
       },
       {
-        quantity: 1,
+        quantity: 100,
         ingredient: {
-          name: 'Broccoli (roasted)',
+          name: "Broccoli (roasted)",
           unit: IngredientUnit.Grams,
           calories: 60,
           protein: 3,
@@ -293,9 +309,9 @@ export const testMeals: IMeal[] = [
         },
       },
       {
-        quantity: 1,
+        quantity: 15,
         ingredient: {
-          name: 'Olive Oil',
+          name: "Olive Oil",
           unit: IngredientUnit.Grams,
           calories: 120,
           protein: 0,
@@ -304,9 +320,9 @@ export const testMeals: IMeal[] = [
         },
       },
       {
-        quantity: 1,
+        quantity: 15,
         ingredient: {
-          name: 'Lemon Juice',
+          name: "Lemon Juice",
           unit: IngredientUnit.Grams,
           calories: 5,
           protein: 0,
@@ -322,21 +338,23 @@ export const testMeals: IMeal[] = [
 
   // +1 day (meals 4–6)
   {
-    id: '4',
+    id: "4",
     name: `Avocado Egg Toast`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 1
     ),
+    recipe: "Sample recipe",
     description:
-      'Sourdough toast topped with creamy avocado and a soft-fried egg.',
+      "Sourdough toast topped with creamy avocado and a soft-fried egg.",
     type: MealType.Breakfast,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Sourdough Bread',
+          name: "Sourdough Bread",
           unit: IngredientUnit.Grams,
           calories: 160,
           protein: 6,
@@ -347,7 +365,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Avocado',
+          name: "Avocado",
           unit: IngredientUnit.Grams,
           calories: 160,
           protein: 2,
@@ -358,7 +376,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Egg',
+          name: "Egg",
           unit: IngredientUnit.Grams,
           calories: 70,
           protein: 6,
@@ -369,7 +387,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Olive Oil (for frying)',
+          name: "Olive Oil (for frying)",
           unit: IngredientUnit.Grams,
           calories: 40,
           protein: 0,
@@ -380,7 +398,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Cherry Tomatoes',
+          name: "Cherry Tomatoes",
           unit: IngredientUnit.Grams,
           calories: 20,
           protein: 1,
@@ -394,21 +412,24 @@ export const testMeals: IMeal[] = [
     macros: { calories: 430, protein: 13, carbs: 43, fat: 26 },
   },
   {
-    id: '5',
+    id: "5",
     name: `Turkey Quinoa Bowl`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 1
     ),
+    recipe:
+      "Cook quinoa according to package directions. In a skillet, brown ground turkey until fully cooked. Add diced bell pepper and spinach, sautéing until tender. Assemble bowls with a base of quinoa, topped with turkey and veggies. Finish with a spoonful of Greek yogurt sauce before serving.",
     description:
-      'Lean ground turkey with veggies over quinoa and a dollop of yogurt sauce.',
+      "Lean ground turkey with veggies over quinoa and a dollop of yogurt sauce.",
     type: MealType.Lunch,
+    imageSrc: "/images/TurkeyQunioaBowl.jpg",
     ingredients: [
       {
-        quantity: 1,
+        quantity: 150,
         ingredient: {
-          name: 'Ground Turkey (lean)',
+          name: "Ground Turkey (lean)",
           unit: IngredientUnit.Grams,
           calories: 240,
           protein: 32,
@@ -417,9 +438,9 @@ export const testMeals: IMeal[] = [
         },
       },
       {
-        quantity: 1,
+        quantity: 120,
         ingredient: {
-          name: 'Quinoa (cooked)',
+          name: "Quinoa (cooked)",
           unit: IngredientUnit.Grams,
           calories: 200,
           protein: 7,
@@ -430,8 +451,8 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Bell Pepper',
-          unit: IngredientUnit.Grams,
+          name: "Bell Pepper",
+          unit: IngredientUnit.Pieces,
           calories: 30,
           protein: 1,
           carbs: 7,
@@ -439,9 +460,9 @@ export const testMeals: IMeal[] = [
         },
       },
       {
-        quantity: 1,
+        quantity: 50,
         ingredient: {
-          name: 'Spinach',
+          name: "Spinach",
           unit: IngredientUnit.Grams,
           calories: 10,
           protein: 1,
@@ -450,9 +471,9 @@ export const testMeals: IMeal[] = [
         },
       },
       {
-        quantity: 1,
+        quantity: 40,
         ingredient: {
-          name: 'Greek Yogurt Sauce',
+          name: "Greek Yogurt Sauce",
           unit: IngredientUnit.Grams,
           calories: 50,
           protein: 5,
@@ -466,21 +487,23 @@ export const testMeals: IMeal[] = [
     macros: { calories: 530, protein: 43, carbs: 42, fat: 18 },
   },
   {
-    id: '6',
+    id: "6",
     name: `Beef Stir-Fry with Rice`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 1
     ),
+    recipe: "Sample recipe",
     description:
-      'Quick-sautéed beef and colorful vegetables tossed in a savory sauce over rice.',
+      "Quick-sautéed beef and colorful vegetables tossed in a savory sauce over rice.",
     type: MealType.Dinner,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Beef Strips',
+          name: "Beef Strips",
           unit: IngredientUnit.Grams,
           calories: 280,
           protein: 30,
@@ -491,7 +514,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Brown Rice (cooked)',
+          name: "Brown Rice (cooked)",
           unit: IngredientUnit.Grams,
           calories: 220,
           protein: 5,
@@ -502,7 +525,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Mixed Vegetables',
+          name: "Mixed Vegetables",
           unit: IngredientUnit.Grams,
           calories: 70,
           protein: 3,
@@ -513,7 +536,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Stir-Fry Sauce',
+          name: "Stir-Fry Sauce",
           unit: IngredientUnit.Grams,
           calories: 60,
           protein: 2,
@@ -524,7 +547,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Sesame Oil',
+          name: "Sesame Oil",
           unit: IngredientUnit.Grams,
           calories: 90,
           protein: 0,
@@ -540,21 +563,23 @@ export const testMeals: IMeal[] = [
 
   // +2 days (meals 7–9)
   {
-    id: '7',
+    id: "7",
     name: `Banana Peanut Oatmeal`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 2
     ),
+    recipe: "Sample recipe",
     description:
-      'Warm oats topped with banana, peanut butter, and a sprinkle of cinnamon.',
+      "Warm oats topped with banana, peanut butter, and a sprinkle of cinnamon.",
     type: MealType.Breakfast,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Rolled Oats (dry)',
+          name: "Rolled Oats (dry)",
           unit: IngredientUnit.Grams,
           calories: 150,
           protein: 5,
@@ -565,7 +590,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Banana',
+          name: "Banana",
           unit: IngredientUnit.Grams,
           calories: 105,
           protein: 1,
@@ -576,7 +601,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Peanut Butter',
+          name: "Peanut Butter",
           unit: IngredientUnit.Grams,
           calories: 190,
           protein: 7,
@@ -587,7 +612,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Milk (or alt.)',
+          name: "Milk (or alt.)",
           unit: IngredientUnit.Grams,
           calories: 80,
           protein: 4,
@@ -598,7 +623,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Cinnamon',
+          name: "Cinnamon",
           unit: IngredientUnit.Grams,
           calories: 5,
           protein: 0,
@@ -612,21 +637,23 @@ export const testMeals: IMeal[] = [
     macros: { calories: 470, protein: 16, carbs: 60, fat: 18 },
   },
   {
-    id: '8',
+    id: "8",
     name: `Hearty Lentil Soup`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 2
     ),
+    recipe: "Sample recipe",
     description:
-      'Comforting bowl of lentils simmered with vegetables and herbs; served with bread.',
+      "Comforting bowl of lentils simmered with vegetables and herbs; served with bread.",
     type: MealType.Lunch,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Lentils (cooked)',
+          name: "Lentils (cooked)",
           unit: IngredientUnit.Grams,
           calories: 230,
           protein: 18,
@@ -637,7 +664,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Carrot & Celery',
+          name: "Carrot & Celery",
           unit: IngredientUnit.Grams,
           calories: 40,
           protein: 1,
@@ -648,7 +675,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Onion & Garlic',
+          name: "Onion & Garlic",
           unit: IngredientUnit.Grams,
           calories: 30,
           protein: 1,
@@ -659,7 +686,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Olive Oil',
+          name: "Olive Oil",
           unit: IngredientUnit.Grams,
           calories: 80,
           protein: 0,
@@ -670,7 +697,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Whole-Grain Bread',
+          name: "Whole-Grain Bread",
           unit: IngredientUnit.Grams,
           calories: 120,
           protein: 5,
@@ -684,21 +711,23 @@ export const testMeals: IMeal[] = [
     macros: { calories: 500, protein: 25, carbs: 63, fat: 12 },
   },
   {
-    id: '9',
+    id: "9",
     name: `Chicken Pesto Pasta`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 2
     ),
+    recipe: "Sample recipe",
     description:
-      'Al dente pasta tossed with basil pesto, juicy chicken, and cherry tomatoes.',
+      "Al dente pasta tossed with basil pesto, juicy chicken, and cherry tomatoes.",
     type: MealType.Dinner,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Pasta (cooked)',
+          name: "Pasta (cooked)",
           unit: IngredientUnit.Grams,
           calories: 300,
           protein: 10,
@@ -709,7 +738,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Chicken Breast',
+          name: "Chicken Breast",
           unit: IngredientUnit.Grams,
           calories: 200,
           protein: 37,
@@ -720,7 +749,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Basil Pesto',
+          name: "Basil Pesto",
           unit: IngredientUnit.Grams,
           calories: 180,
           protein: 4,
@@ -731,7 +760,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Cherry Tomatoes',
+          name: "Cherry Tomatoes",
           unit: IngredientUnit.Grams,
           calories: 20,
           protein: 1,
@@ -742,7 +771,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Parmesan',
+          name: "Parmesan",
           unit: IngredientUnit.Grams,
           calories: 80,
           protein: 7,
@@ -758,21 +787,23 @@ export const testMeals: IMeal[] = [
 
   // +3 days (meals 10–12)
   {
-    id: '10',
+    id: "10",
     name: `Berry Smoothie Bowl`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 3
     ),
+    recipe: "Sample recipe",
     description:
-      'Thick smoothie topped with banana, seeds, and granola for spoonable goodness.',
+      "Thick smoothie topped with banana, seeds, and granola for spoonable goodness.",
     type: MealType.Breakfast,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Frozen Berries',
+          name: "Frozen Berries",
           unit: IngredientUnit.Grams,
           calories: 90,
           protein: 1,
@@ -783,7 +814,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Banana',
+          name: "Banana",
           unit: IngredientUnit.Grams,
           calories: 105,
           protein: 1,
@@ -794,7 +825,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Greek Yogurt',
+          name: "Greek Yogurt",
           unit: IngredientUnit.Grams,
           calories: 80,
           protein: 14,
@@ -805,7 +836,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Granola',
+          name: "Granola",
           unit: IngredientUnit.Grams,
           calories: 160,
           protein: 3,
@@ -816,7 +847,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Chia Seeds',
+          name: "Chia Seeds",
           unit: IngredientUnit.Grams,
           calories: 60,
           protein: 2,
@@ -830,20 +861,22 @@ export const testMeals: IMeal[] = [
     macros: { calories: 420, protein: 20, carbs: 68, fat: 10 },
   },
   {
-    id: '11',
+    id: "11",
     name: `Tuna Salad Sandwich`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 3
     ),
-    description: 'Classic tuna salad on whole-grain bread with crisp lettuce.',
+    recipe: "Sample recipe",
+    description: "Classic tuna salad on whole-grain bread with crisp lettuce.",
     type: MealType.Lunch,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Canned Tuna (in water)',
+          name: "Canned Tuna (in water)",
           unit: IngredientUnit.Grams,
           calories: 160,
           protein: 36,
@@ -854,7 +887,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Whole-Grain Bread',
+          name: "Whole-Grain Bread",
           unit: IngredientUnit.Grams,
           calories: 220,
           protein: 8,
@@ -865,7 +898,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Light Mayo',
+          name: "Light Mayo",
           unit: IngredientUnit.Grams,
           calories: 60,
           protein: 0,
@@ -876,7 +909,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Celery & Onion',
+          name: "Celery & Onion",
           unit: IngredientUnit.Grams,
           calories: 20,
           protein: 1,
@@ -887,7 +920,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Lettuce',
+          name: "Lettuce",
           unit: IngredientUnit.Grams,
           calories: 5,
           protein: 0,
@@ -901,20 +934,22 @@ export const testMeals: IMeal[] = [
     macros: { calories: 465, protein: 33, carbs: 47, fat: 11 },
   },
   {
-    id: '12',
+    id: "12",
     name: `Shrimp Tacos`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 3
     ),
-    description: 'Zesty shrimp in warm tortillas with slaw and lime crema.',
+    recipe: "Sample recipe",
+    description: "Zesty shrimp in warm tortillas with slaw and lime crema.",
     type: MealType.Dinner,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Shrimp',
+          name: "Shrimp",
           unit: IngredientUnit.Grams,
           calories: 140,
           protein: 26,
@@ -925,7 +960,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Corn Tortillas',
+          name: "Corn Tortillas",
           unit: IngredientUnit.Grams,
           calories: 200,
           protein: 5,
@@ -936,7 +971,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Cabbage Slaw',
+          name: "Cabbage Slaw",
           unit: IngredientUnit.Grams,
           calories: 60,
           protein: 2,
@@ -947,7 +982,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Lime Crema',
+          name: "Lime Crema",
           unit: IngredientUnit.Grams,
           calories: 100,
           protein: 2,
@@ -958,7 +993,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Avocado',
+          name: "Avocado",
           unit: IngredientUnit.Grams,
           calories: 120,
           protein: 2,
@@ -974,21 +1009,23 @@ export const testMeals: IMeal[] = [
 
   // +4 days (meals 13–15)
   {
-    id: '13',
+    id: "13",
     name: `Cottage Cheese Fruit Bowl`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 4
     ),
+    recipe: "Sample recipe",
     description:
-      'High-protein cottage cheese with pineapple, berries, and a sprinkle of nuts.',
+      "High-protein cottage cheese with pineapple, berries, and a sprinkle of nuts.",
     type: MealType.Breakfast,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Cottage Cheese (low-fat)',
+          name: "Cottage Cheese (low-fat)",
           unit: IngredientUnit.Grams,
           calories: 140,
           protein: 24,
@@ -999,7 +1036,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Pineapple Chunks',
+          name: "Pineapple Chunks",
           unit: IngredientUnit.Grams,
           calories: 80,
           protein: 1,
@@ -1010,7 +1047,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Blueberries',
+          name: "Blueberries",
           unit: IngredientUnit.Grams,
           calories: 60,
           protein: 1,
@@ -1021,7 +1058,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Almonds',
+          name: "Almonds",
           unit: IngredientUnit.Grams,
           calories: 120,
           protein: 4,
@@ -1032,7 +1069,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Honey',
+          name: "Honey",
           unit: IngredientUnit.Grams,
           calories: 40,
           protein: 0,
@@ -1046,21 +1083,23 @@ export const testMeals: IMeal[] = [
     macros: { calories: 360, protein: 27, carbs: 45, fat: 10 },
   },
   {
-    id: '14',
+    id: "14",
     name: `Chickpea Buddha Bowl`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 4
     ),
+    recipe: "Sample recipe",
     description:
-      'Roasted chickpeas with sweet potato, greens, and tahini drizzle.',
+      "Roasted chickpeas with sweet potato, greens, and tahini drizzle.",
     type: MealType.Lunch,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Chickpeas (roasted)',
+          name: "Chickpeas (roasted)",
           unit: IngredientUnit.Grams,
           calories: 240,
           protein: 12,
@@ -1071,7 +1110,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Sweet Potato (roasted)',
+          name: "Sweet Potato (roasted)",
           unit: IngredientUnit.Grams,
           calories: 180,
           protein: 3,
@@ -1082,7 +1121,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Mixed Greens',
+          name: "Mixed Greens",
           unit: IngredientUnit.Grams,
           calories: 20,
           protein: 2,
@@ -1093,7 +1132,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Quinoa (cooked)',
+          name: "Quinoa (cooked)",
           unit: IngredientUnit.Grams,
           calories: 150,
           protein: 6,
@@ -1104,7 +1143,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Tahini Sauce',
+          name: "Tahini Sauce",
           unit: IngredientUnit.Grams,
           calories: 120,
           protein: 4,
@@ -1118,21 +1157,23 @@ export const testMeals: IMeal[] = [
     macros: { calories: 600, protein: 27, carbs: 115, fat: 18 },
   },
   {
-    id: '15',
+    id: "15",
     name: `Margherita Pizza + Arugula`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 4
     ),
+    recipe: "Sample recipe",
     description:
-      'Thin-crust tomato, mozzarella, and basil with a peppery arugula side.',
+      "Thin-crust tomato, mozzarella, and basil with a peppery arugula side.",
     type: MealType.Dinner,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Pizza Crust (thin)',
+          name: "Pizza Crust (thin)",
           unit: IngredientUnit.Grams,
           calories: 320,
           protein: 10,
@@ -1143,7 +1184,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Tomato Sauce',
+          name: "Tomato Sauce",
           unit: IngredientUnit.Grams,
           calories: 60,
           protein: 2,
@@ -1154,7 +1195,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Mozzarella',
+          name: "Mozzarella",
           unit: IngredientUnit.Grams,
           calories: 260,
           protein: 18,
@@ -1165,7 +1206,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Basil',
+          name: "Basil",
           unit: IngredientUnit.Grams,
           calories: 5,
           protein: 0,
@@ -1176,7 +1217,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Arugula (side salad)',
+          name: "Arugula (side salad)",
           unit: IngredientUnit.Grams,
           calories: 30,
           protein: 2,
@@ -1192,21 +1233,23 @@ export const testMeals: IMeal[] = [
 
   // +5 days (meals 16–18)
   {
-    id: '16',
+    id: "16",
     name: `Protein Pancakes`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 5
     ),
+    recipe: "Sample recipe",
     description:
-      'Fluffy pancakes boosted with protein powder and topped with berries.',
+      "Fluffy pancakes boosted with protein powder and topped with berries.",
     type: MealType.Breakfast,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Pancake Batter',
+          name: "Pancake Batter",
           unit: IngredientUnit.Grams,
           calories: 260,
           protein: 8,
@@ -1217,7 +1260,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Protein Powder',
+          name: "Protein Powder",
           unit: IngredientUnit.Grams,
           calories: 120,
           protein: 24,
@@ -1228,7 +1271,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Egg',
+          name: "Egg",
           unit: IngredientUnit.Grams,
           calories: 70,
           protein: 6,
@@ -1239,7 +1282,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Maple Syrup',
+          name: "Maple Syrup",
           unit: IngredientUnit.Grams,
           calories: 100,
           protein: 0,
@@ -1250,7 +1293,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Mixed Berries',
+          name: "Mixed Berries",
           unit: IngredientUnit.Grams,
           calories: 60,
           protein: 1,
@@ -1264,21 +1307,23 @@ export const testMeals: IMeal[] = [
     macros: { calories: 520, protein: 30, carbs: 75, fat: 12 },
   },
   {
-    id: '17',
+    id: "17",
     name: `Mediterranean Chicken Salad`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 5
     ),
+    recipe: "Sample recipe",
     description:
-      'Herbed chicken over crisp veggies with olives and feta; lemon-oregano vinaigrette.',
+      "Herbed chicken over crisp veggies with olives and feta; lemon-oregano vinaigrette.",
     type: MealType.Lunch,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Grilled Chicken',
+          name: "Grilled Chicken",
           unit: IngredientUnit.Grams,
           calories: 220,
           protein: 40,
@@ -1289,7 +1334,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Cucumber & Tomato',
+          name: "Cucumber & Tomato",
           unit: IngredientUnit.Grams,
           calories: 40,
           protein: 2,
@@ -1300,7 +1345,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Kalamata Olives',
+          name: "Kalamata Olives",
           unit: IngredientUnit.Grams,
           calories: 80,
           protein: 1,
@@ -1311,7 +1356,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Feta Cheese',
+          name: "Feta Cheese",
           unit: IngredientUnit.Grams,
           calories: 100,
           protein: 5,
@@ -1322,7 +1367,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Olive Oil & Lemon',
+          name: "Olive Oil & Lemon",
           unit: IngredientUnit.Grams,
           calories: 100,
           protein: 0,
@@ -1336,21 +1381,23 @@ export const testMeals: IMeal[] = [
     macros: { calories: 520, protein: 36, carbs: 16, fat: 31 },
   },
   {
-    id: '18',
+    id: "18",
     name: `Baked Cod with Potatoes`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 5
     ),
+    recipe: "Sample recipe",
     description:
-      'Tender cod baked with baby potatoes and green beans, finished with herbs.',
+      "Tender cod baked with baby potatoes and green beans, finished with herbs.",
     type: MealType.Dinner,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Cod Fillet',
+          name: "Cod Fillet",
           unit: IngredientUnit.Grams,
           calories: 160,
           protein: 35,
@@ -1361,7 +1408,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Baby Potatoes',
+          name: "Baby Potatoes",
           unit: IngredientUnit.Grams,
           calories: 220,
           protein: 5,
@@ -1372,7 +1419,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Green Beans',
+          name: "Green Beans",
           unit: IngredientUnit.Grams,
           calories: 40,
           protein: 2,
@@ -1383,7 +1430,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Olive Oil',
+          name: "Olive Oil",
           unit: IngredientUnit.Grams,
           calories: 120,
           protein: 0,
@@ -1394,7 +1441,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Herbs & Lemon',
+          name: "Herbs & Lemon",
           unit: IngredientUnit.Grams,
           calories: 5,
           protein: 0,
@@ -1410,21 +1457,23 @@ export const testMeals: IMeal[] = [
 
   // +6 days (meals 19–21)
   {
-    id: '19',
+    id: "19",
     name: `Veggie Omelette & Toast`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 6
     ),
+    recipe: "Sample recipe",
     description:
-      'Fluffy three-egg omelette with sautéed veggies and a slice of whole-grain toast.',
+      "Fluffy three-egg omelette with sautéed veggies and a slice of whole-grain toast.",
     type: MealType.Breakfast,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Eggs',
+          name: "Eggs",
           unit: IngredientUnit.Grams,
           calories: 210,
           protein: 18,
@@ -1435,7 +1484,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Bell Pepper & Onion',
+          name: "Bell Pepper & Onion",
           unit: IngredientUnit.Grams,
           calories: 40,
           protein: 1,
@@ -1446,7 +1495,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Mushrooms',
+          name: "Mushrooms",
           unit: IngredientUnit.Grams,
           calories: 20,
           protein: 3,
@@ -1457,7 +1506,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Olive Oil (cooking)',
+          name: "Olive Oil (cooking)",
           unit: IngredientUnit.Grams,
           calories: 80,
           protein: 0,
@@ -1468,7 +1517,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Whole-Grain Toast',
+          name: "Whole-Grain Toast",
           unit: IngredientUnit.Grams,
           calories: 110,
           protein: 4,
@@ -1482,21 +1531,23 @@ export const testMeals: IMeal[] = [
     macros: { calories: 430, protein: 26, carbs: 35, fat: 24 },
   },
   {
-    id: '20',
+    id: "20",
     name: `Beef Burrito Bowl`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 6
     ),
+    recipe: "Sample recipe",
     description:
-      'Seasoned beef with rice, beans, corn, and salsa—no tortilla needed.',
+      "Seasoned beef with rice, beans, corn, and salsa—no tortilla needed.",
     type: MealType.Lunch,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Ground Beef (90/10)',
+          name: "Ground Beef (90/10)",
           unit: IngredientUnit.Grams,
           calories: 260,
           protein: 26,
@@ -1507,7 +1558,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Brown Rice (cooked)',
+          name: "Brown Rice (cooked)",
           unit: IngredientUnit.Grams,
           calories: 220,
           protein: 5,
@@ -1518,7 +1569,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Black Beans',
+          name: "Black Beans",
           unit: IngredientUnit.Grams,
           calories: 160,
           protein: 10,
@@ -1529,7 +1580,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Corn',
+          name: "Corn",
           unit: IngredientUnit.Grams,
           calories: 80,
           protein: 3,
@@ -1540,7 +1591,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Salsa',
+          name: "Salsa",
           unit: IngredientUnit.Grams,
           calories: 30,
           protein: 1,
@@ -1554,21 +1605,23 @@ export const testMeals: IMeal[] = [
     macros: { calories: 620, protein: 40, carbs: 99, fat: 20 },
   },
   {
-    id: '21',
+    id: "21",
     name: `Mushroom Risotto`,
     date: new Date(
       baseDate.getFullYear(),
       baseDate.getMonth(),
       baseDate.getDate() + 6
     ),
+    recipe: "Sample recipe",
     description:
-      'Creamy arborio rice with sautéed mushrooms, parmesan, and fresh herbs.',
+      "Creamy arborio rice with sautéed mushrooms, parmesan, and fresh herbs.",
     type: MealType.Dinner,
+    imageSrc: "/images/ChickenStyrFry.jpg",
     ingredients: [
       {
         quantity: 1,
         ingredient: {
-          name: 'Arborio Rice (cooked)',
+          name: "Arborio Rice (cooked)",
           unit: IngredientUnit.Grams,
           calories: 280,
           protein: 6,
@@ -1579,7 +1632,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Mushrooms',
+          name: "Mushrooms",
           unit: IngredientUnit.Grams,
           calories: 40,
           protein: 6,
@@ -1590,7 +1643,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Parmesan',
+          name: "Parmesan",
           unit: IngredientUnit.Grams,
           calories: 120,
           protein: 11,
@@ -1601,7 +1654,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Olive Oil & Butter',
+          name: "Olive Oil & Butter",
           unit: IngredientUnit.Grams,
           calories: 160,
           protein: 0,
@@ -1612,7 +1665,7 @@ export const testMeals: IMeal[] = [
       {
         quantity: 1,
         ingredient: {
-          name: 'Vegetable Stock',
+          name: "Vegetable Stock",
           unit: IngredientUnit.Grams,
           calories: 20,
           protein: 1,
@@ -1637,13 +1690,15 @@ export const testMealsAA: IMeal[] = Array.from({ length: 7 }, (_, day) => {
       id: `${day * 3 + 1}`,
       name: `Breakfast Day ${day + 1}`,
       date: new Date(baseDate),
+      recipe: "Sample recipe",
       description: `Healthy breakfast for day ${day + 1}`,
       type: MealType.Breakfast,
+      imageSrc: "/images/ChickenStyrFry.jpg",
       ingredients: [
         {
           quantity: 1,
           ingredient: {
-            name: 'Oats',
+            name: "Oats",
             unit: IngredientUnit.Grams,
             calories: 150,
             protein: 5,
@@ -1660,13 +1715,15 @@ export const testMealsAA: IMeal[] = Array.from({ length: 7 }, (_, day) => {
       id: `${day * 3 + 2}`,
       name: `Lunch Day ${day + 1}`,
       date: new Date(baseDate),
+      recipe: "Sample recipe",
       description: `Nutritious lunch for day ${day + 1}`,
       type: MealType.Lunch,
+      imageSrc: "/images/ChickenStyrFry.jpg",
       ingredients: [
         {
           quantity: 1,
           ingredient: {
-            name: 'Oats',
+            name: "Oats",
             unit: IngredientUnit.Grams,
             calories: 150,
             protein: 5,
@@ -1683,13 +1740,15 @@ export const testMealsAA: IMeal[] = Array.from({ length: 7 }, (_, day) => {
       id: `${day * 3 + 3}`,
       name: `Dinner Day ${day + 1}`,
       date: new Date(baseDate),
+      recipe: "Sample recipe",
       description: `Delicious dinner for day ${day + 1}`,
       type: MealType.Dinner,
+      imageSrc: "/images/ChickenStyrFry.jpg",
       ingredients: [
         {
           quantity: 1,
           ingredient: {
-            name: 'Oats',
+            name: "Oats",
             unit: IngredientUnit.Grams,
             calories: 150,
             protein: 5,
@@ -1711,7 +1770,7 @@ export default function MealsBridge() {
   const setMeals = useMealsStore((s: any) => s.setMeals);
 
   const { data } = useQuery({
-    queryKey: ['meals'],
+    queryKey: ["meals"],
     queryFn: async () => testMeals, // fetchMeals
     staleTime: 60_000, // tweak to your needs
     refetchOnWindowFocus: true, // auto-refresh when user returns

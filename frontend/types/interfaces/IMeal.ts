@@ -5,11 +5,13 @@ export default interface IMeal {
   id: string;
   date: Date;
   description: string;
+  recipe: string;
   servings: number;
   ingredients: { quantity: number; ingredient: IIngredient }[];
   type: MealType;
   selected: boolean;
   name: string;
+  imageSrc: string;
   macros: {
     calories: number;
     protein: number;
