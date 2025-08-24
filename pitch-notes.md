@@ -26,6 +26,7 @@
 
 - Tamagotchi
   - Feed with Points
+  - Health Bar 
 
 - Community Tab
   - Share Meals
