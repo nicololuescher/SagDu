@@ -10,7 +10,7 @@
 
 - Edit Meals
   - Plan a week
-  - Persons per Mail
+  - Persons per Meal
   - Preferences per Meal
 
 - Shopping List
