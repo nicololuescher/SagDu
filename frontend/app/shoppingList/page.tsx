@@ -63,8 +63,14 @@ export default function ShoppingList() {
             >
               <Card className="w-full hover:shadow-lg hover:scale-105 transition-transform duration-200">
                 <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="text-lg">{item.name}</CardTitle>
+
+                  <Badge variant="secondary">
+                    {item.amount} {item.unit}
+                  </Badge>
+                </CardHeader>
+                <CardContent>
                   <div className="flex items-center gap-2">
-                    <CardTitle className="text-lg">{item.name}</CardTitle>
                     {item.diet === "vegan" && (
                       <Badge variant="outline">🥦 Vegan</Badge>
                     )}
@@ -75,10 +81,7 @@ export default function ShoppingList() {
                       <Badge variant="destructive">🍖 Meat</Badge>
                     )}
                   </div>
-                  <Badge variant="secondary">
-                    {item.amount} {item.unit}
-                  </Badge>
-                </CardHeader>
+                </CardContent>
               </Card>
             </motion.div>
           </motion.div>
